@@ -1,0 +1,17 @@
+# Ignore specific folders
+volunteer_dilemma/
+trust_simple/
+trust/
+public_goods_simple/
+matching_pennies/
+guess_two_thirds/
+dictator/
+cournot/
+common_value_auction/
+bertrand/
+bargaining/
+
+# Ignore __pycache__ and compiled files
+__pycache__/
+*.pyc
+*.pyo
