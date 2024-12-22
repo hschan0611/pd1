@@ -1,0 +1,14 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Welcome to Game 2
+{% endblock %}
+
+{% block content %}
+    <h3>This is Game 2</h3>
+    <p>In Game 2, you will again be matched with another participant for a sequence of rounds, with potentially different payoffs.</p>
+    <p>Once Game 2 is over, the experiment will end, and you will receive your total earnings from both games.</p>
+
+    {% next_button %}
+{% endblock %}

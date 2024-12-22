@@ -1,0 +1,25 @@
+{{ block title }}
+Question 1
+{{ endblock }}
+
+{{ block content }}
+<form method="post">
+    <label>True/False: The first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with.</label>
+    <div>
+        <input type="radio" id="true" name="quiz_Q1_response" value="True">
+        <label for="true">True</label><br>
+        <input type="radio" id="false" name="quiz_Q1_response" value="False">
+        <label for="false">False</label><br>
+    </div>
+
+    <!-- Display errors if any -->
+    {{ formfield_errors "quiz_Q1_response" }}
+
+    <div class="container">
+        <div class="btn-holder">
+            <button type="submit" class="otree-btn-next btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+{{ endblock }}
+

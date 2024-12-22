@@ -10,6 +10,7 @@ cournot/
 common_value_auction/
 bertrand/
 bargaining/
+traveler_dilemma
 
 # Ignore __pycache__ and compiled files
 __pycache__/

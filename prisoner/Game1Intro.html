@@ -1,0 +1,16 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Welcome to Game 1
+{% endblock %}
+
+{% block content %}
+    <h3>This is Game 1</h3>
+    <p>In Game 1, you will be matched with another participant for a sequence of rounds.</p>
+    <p>You will have a choice between two actions: <strong>Action 1</strong> and <strong>Action 2</strong>.</p>
+    <p>Your earnings will depend on your choice and the choice of the person you are paired with.</p>
+    <p>Once Game 1 is over, you will begin Game 2, which may have different payoffs.</p>
+
+    {% next_button %}
+{% endblock %}

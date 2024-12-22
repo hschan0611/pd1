@@ -1,0 +1,25 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <h3>The Experiment is Over!</h3>
+
+    <p>This ends the experiment, after {{ total_matches }} matches in total (both Game 1 and Game 2).</p>
+
+    <p>Your total earnings from both games are: <strong>{{ total_payoff }}</strong>.</p>
+
+    <p>We will start payments shortly. Please wait quietly at your seat until the experimenter calls your computer station number.</p>
+
+    <p>Thank you very much for your participation!</p>
+{% endblock %}
+
+{% block styles %}
+    <style>
+        .otree-timer {
+            display: none;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,40 @@
+{{ block title }}
+Question 2
+{{ endblock }}
+
+{{ block content }}
+<h5>Result</h5>
+{{ formfields }}
+
+{{ if show_solutions }}
+    {{ if player.quiz_Q2_correct }}
+    <p class="solution-correct">
+        Your answer is correct.<br>
+        <br>
+        <i>"{{ Q2.explanation }}"</i><br>
+    </p>
+    {{ else }}
+    <p class="solution-incorrect">
+        Your answer is incorrect. The correct answer is {{ Q2.solution }}.<br>
+        <br>
+        <i>"{{ Q2.explanation }}"</i><br>
+    </p>
+    {{ endif }}
+{{ endif }}
+
+<button class="otree-btn-next btn btn-primary">Next Question</button>
+
+<style>
+    input {
+        pointer-events: none;
+    }
+
+    .solution-incorrect {
+        color: darkred;
+    }
+
+    .solution-correct {
+        color: green;
+    }
+</style>
+{{ endblock }}

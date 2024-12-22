@@ -1,0 +1,18 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Game 2 - Match {{ match_number }}: Continue or End?
+{% endblock %}
+
+{% block content %}
+    <p>The computer rolled a die to determine if the match continues.</p>
+
+    {% if is_last_round %}
+        <p>The die roll was {{ dieroll }}. Since it was higher than {{ continuation_chance }}, the match has ended.</p>
+    {% else %}
+        <p>The die roll was {{ dieroll }}. Since it was {{ continuation_chance }} or less, the match continues to the next round.</p>
+    {% endif %}
+
+    {% next_button %}
+{% endblock %}

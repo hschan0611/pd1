@@ -1,0 +1,37 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}
+    Game {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}: Results
+{% endblock %}
+
+{% block content %}
+    <h3>Game {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}</h3>
+
+    <h4>Payoff Table</h4>
+    <table class='table table-bordered text-center' style='width: auto; margin: auto'>
+        <tr>
+            <th></th>
+            <th>Action 1</th>
+            <th>Action 2</th>
+        </tr>
+        <tr>
+            <th>You: Action 1</th>
+            <td>{{ both_cooperate_payoff }}, {{ both_cooperate_payoff }}</td>
+            <td>{{ betrayed_payoff }}, {{ betray_payoff }}</td>
+        </tr>
+        <tr>
+            <th>You: Action 2</th>
+            <td>{{ betray_payoff }}, {{ betrayed_payoff }}</td>
+            <td>{{ both_defect_payoff }}, {{ both_defect_payoff }}</td>
+        </tr>
+    </table>
+
+    <p>Your choice: {{ my_decision }}</p>
+
+    <p>Other participant's choice: {{ opponent_decision }}</p>
+
+    <p>Your payoff for this round: {{ player.payoff }}</p>
+
+    {% next_button %}
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Instructions
+{% endblock %}
+
+{% block content %}
+<div class="card card-body bg-light instructions">
+    <p class="big">
+        <strong>Instructions</strong>
+    </p>
+    <p>
+        This is a computerized decision-making experiment in which you will be paid based on the decisions you make. The entire experiment will take approximately 60 minutes. At the end of the experiment, you will be paid privately and in cash for your participation. All information collected will remain anonymous, ensuring that neither the experimenter nor other participants can link your identity to your decisions. We are interested in your individual choices, so there are no right or wrong answers.
+    </p>
+
+    <p><strong>Payment</strong></p>
+    <p>
+        In this experiment, you will earn points through the decisions that you make. At the end of the experiment, these points will be converted into dollars at a rate of 100 points per dollar. In addition to any money you earn from your decisions, you will also receive a $5 show-up fee.
+    </p>
+
+    <p><strong>The Experiment</strong></p>
+    <p>
+        In this experiment, you will participate in two games. Your decisions in the first game will not at all affect what will happen in the second game. You will be able to earn points in both games and your final income will be the sum of the points you get in both games.
+    </p>
+
+    <p>Each game consists of sequences, referred to as matches. The length of a match, referred to as the number of rounds, is randomly determined. After each round, there is a {{ continuation_chance }}% probability that the match will continue for at least another round. So, for instance:</p>
+
+    <ul>
+        <li>If you are in round 2, the probability there will be a third round is {{ continuation_chance }}%.</li>
+        <li>If you are in round 9, the probability there will be a tenth round is also {{ continuation_chance }}%.</li>
+    </ul>
+
+    <p>This is how the length of a match is determined: at the end of each round, the computer rolls a fair 100-sided die.</p>
+
+    <ul>
+        <li>If the die comes up {{ die_threshold_plus_one }} or more, the match ends.</li>
+        <li>If the die comes up {{ continuation_chance }} or less, the match continues to another round.</li>
+    </ul>
+
+    <p>Once a match ends, you will be randomly paired with another person for a new match.</p>
+
+    <p>In each round, you and the person you are paired with choose simultaneously between two actions, <strong>Action 1</strong> and <strong>Action 2</strong>.</p>
+
+    <p>This table shows the payoff associated with each choice for <strong>Game 1</strong>:</p>
+
+    <table class='table table-bordered text-center' style='width: auto; margin: auto'>
+        <tr>
+            <th colspan=2 rowspan=2></th>
+            <th colspan=2>The Other Participant</th>
+        </tr>
+        <tr>
+            <th>Action 1</th>
+            <th>Action 2</th>
+        </tr>
+        <tr>
+            <th rowspan=2><span class="rotate90">You</span></th>
+            <th>Action 1</th>
+            <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+            <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
+        </tr>
+        <tr>
+            <th>Action 2</th>
+            <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+            <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+        </tr>
+    </table>
+
+    <p>The first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with.</p>
+
+    <ul>
+        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 1</strong>, you each make {{ Constants.both_cooperate_payoff_1 }}.</li>
+        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 2</strong>, you make {{ Constants.betrayed_payoff_1 }} while the other makes {{ Constants.betray_payoff_1 }}.</li>
+        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 1</strong>, you make {{ Constants.betray_payoff_1 }} while the other makes {{ Constants.betrayed_payoff_1 }}.</li>
+        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 2</strong>, you each make {{ Constants.both_defect_payoff_1 }}.</li>
+    </ul>
+
+    <p><strong>Note:</strong> After completing this first game, you will participate in a second game with different payoffs. The format and rules will remain the same, but the specific payoff amounts will change.</p>
+
+    <p>Once you and the person you are paired with have made your choices, those choices will be highlighted, and your payoff for the round will appear.</p>
+
+    <p>You will earn ${{ Constants.conversion_rate }} for every point scored, in addition to the $5 show-up fee.</p>
+
+    {% next_button %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    .big {
+        font-size: large;
+    }
+</style>
+{% endblock %}

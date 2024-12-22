@@ -1,0 +1,32 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    The End of Quiz
+{% endblock %}
+
+{% block content %}
+
+<div class="card card-body bg-light instructions">
+    <div class="big">
+
+        <p>This is the end of the quiz.</p>
+
+        <p>Are there any questions before we start with the paid matches?</p>
+            </div>
+</div>
+
+    {% next_button %}
+
+{% endblock %}
+
+{% block styles %}
+    <style type="text/css">
+        .big{
+            font-size: large;
+        }
+        ul li {
+    padding: 5px 0px;
+    }
+    </style>
+{% endblock %}
