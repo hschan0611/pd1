@@ -1,0 +1,24 @@
+{% extends "global/Page.html" %}
+{% block title %}Bomb Task{% endblock %}
+
+{% block content %}
+<p>
+  You have now reached <strong>a new task</strong>, separate from the two games you just played.
+  This task is called the <em>Bomb Task</em>. The points you earn here will be added to your final payment.
+</p>
+
+<p>You will choose how many boxes (0–{{ num_boxes }}) to collect.</p>
+<ul>
+  <li>Exactly one box hides a bomb, equally likely among all boxes.</li>
+  <li>If the bomb is among the boxes you collect, your payoff is <strong>{{ pay_if_hit }}</strong> points.</li>
+  <li>Otherwise, you earn <strong>0.16 points</strong> per box you collect.</li>
+</ul>
+
+<p>For example:</p>
+<ul>
+  <li>If you choose 20 boxes and do <em>not</em> hit the bomb, you earn 20 × 0.16 = <strong>3.2 points</strong>.</li>
+  <li>If you hit the bomb, you earn <strong>0 points</strong>.</li>
+</ul>
+
+{{ next_button }}
+{% endblock %}

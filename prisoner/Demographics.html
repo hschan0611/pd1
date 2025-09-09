@@ -1,0 +1,53 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}A few questions about you{% endblock %}
+
+{% block content %}
+  <p>Your answers are confidential and used only for research. You may select “Prefer not to say.”</p>
+
+  <div class="mb-3">
+    {% formfield player.age %}
+  </div>
+
+  <div class="mb-3">
+    {% formfield player.gender %}
+    <div id="gender_self_wrap" style="display:none; margin-top:8px;">
+      {% formfield player.gender_self_describe %}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    {% formfield player.education %}
+    <div id="education_other_wrap" style="display:none; margin-top:8px;">
+      {% formfield player.education_other %}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    {% formfield player.econ_courses %}
+  </div>
+
+  <div class="mb-3">
+    {% formfield player.native_english %}
+  </div>
+
+  {% next_button %}
+
+  <script>
+    function updateConditional() {
+      const gender = document.querySelector('input[name="gender"]:checked');
+      const edu    = document.querySelector('input[name="education"]:checked');
+
+      document.getElementById('gender_self_wrap').style.display =
+        (gender && gender.value === 'Self-describe') ? 'block' : 'none';
+
+      document.getElementById('education_other_wrap').style.display =
+        (edu && edu.value === 'Other') ? 'block' : 'none';
+    }
+    document.addEventListener('change', function(e){
+      if (e.target.name === 'gender' || e.target.name === 'education') updateConditional();
+    });
+    document.addEventListener('DOMContentLoaded', updateConditional);
+  </script>
+{% endblock %}

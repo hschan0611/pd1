@@ -6,9 +6,33 @@
 {% endblock %}
 
 {% block content %}
-    <h3>This is Game 2</h3>
-    <p>In Game 2, you will again be matched with another participant for a sequence of rounds, with potentially different payoffs.</p>
-    <p>Once Game 2 is over, the experiment will end, and you will receive your total earnings from both games.</p>
+<p>
+    You are now beginning <strong>Game 2</strong>.
+    The rules and structure are the same as in Game 1, but the payoffs differ.
+    Please review the new payoff matrix carefully before making your decisions.
+</p>
 
+    <h4>Payoff Matrix</h4>
+    <p>Below is the payoff matrix for Game 2:</p>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th></th>
+            <th>Other chooses Action 1</th>
+            <th>Other chooses Action 2</th>
+        </tr>
+        <tr>
+            <th>You choose Action 1</th>
+            <td>{{ both_cooperate_payoff }}, {{ both_cooperate_payoff }}</td>
+            <td>{{ betray_payoff }}, {{ betrayed_payoff }}</td>
+        </tr>
+        <tr>
+            <th>You choose Action 2</th>
+            <td>{{ betrayed_payoff }}, {{ betray_payoff }}</td>
+            <td>{{ both_defect_payoff }}, {{ both_defect_payoff }}</td>
+        </tr>
+    </table>
+
+    <br>
     {% next_button %}
 {% endblock %}

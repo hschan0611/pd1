@@ -1,0 +1,39 @@
+{% extends "global/Page.html" %}
+{% block title %}Final Payment{% endblock %}
+
+{% block content %}
+
+<h3>Random Selections</h3>
+<ul>
+  <li><strong>Game 1</strong> – selected match:
+  <strong>{% if g1_match %}{{ g1_match }}{% else %}N/A{% endif %}</strong>
+</li>
+<li><strong>Game 2</strong> – selected match:
+  <strong>{% if g2_match %}{{ g2_match }}{% else %}N/A{% endif %}</strong>
+</li>
+</ul>
+
+<h3>Points (by task)</h3>
+<ul>
+  <li>
+    <strong>Game 1 (selected match)</strong><br>
+    &nbsp;&nbsp;• Actions subtotal: <strong>{{ g1_pd_points }}</strong> pts<br>
+    &nbsp;&nbsp;• Belief bonuses (all rounds in selected match): <strong>{{ g1_belief_points }}</strong> pts
+  </li>
+  <li>
+    <strong>Game 2 (selected match)</strong><br>
+    &nbsp;&nbsp;• Actions subtotal: <strong>{{ g2_pd_points }}</strong> pts<br>
+    &nbsp;&nbsp;• Belief bonuses (all rounds in selected match): <strong>{{ g2_belief_points }}</strong> pts
+  </li>
+  <li><strong>Bomb Test</strong>: <strong>{{ bret_points }}</strong> pts</li>
+  <li><u>Total across tasks</u>: <strong>{{ grand_points }}</strong> pts</li>
+</ul>
+
+<h3>Cash</h3>
+<ul>
+  <li>Tasks → cash: <strong>{{ task_cash }}</strong></li>
+  <li>Show-up fee: <strong>{{ participation_fee }}</strong></li>
+  <li><u>Total Payment</u>: <strong>{{ grand_total_cash }}</strong></li>
+</ul>
+
+{% endblock %}

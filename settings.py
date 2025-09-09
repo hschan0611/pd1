@@ -1,101 +1,69 @@
 from os import environ
 
-# if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
-# in SESSION_CONFIGS, except those that explicitly override it.
-# the session config can be accessed from methods in your apps as self.session.config,
-# e.g. self.session.config['participation_fee']
-
+# Default session settings
 SESSION_CONFIG_DEFAULTS = {
-    'real_world_currency_per_point': 0.01,
+    'real_world_currency_per_point': 0.005,
     'participation_fee': 5.00,
     'doc': "",
 }
 
+# Session configurations
 SESSION_CONFIGS = [
-    {
-        'name': 'prisoner',
-        'display_name': "Infinitely Repeated Prisoner's Dilemma",
-        'num_demo_participants': 4,
-        'app_sequence': ['prisoner'],
-    },
+    dict(
+        name='prisoner',
+        display_name='Infinitely Repeated PD',
+        num_demo_participants=2,
+        app_sequence=['prisoner', 'payment'],
+        real_world_currency_per_point=1 / 32,  # 32 pts = $1
+        participation_fee=8.00,  # $8 show-up fee
+    ),
 ]
-# see the end of this file for the inactive session configs
 
-# Define custom participant fields
-PARTICIPANT_FIELDS = ['progress']
+# Define participant fields
+PARTICIPANT_FIELDS = [
+    'progress',
+    'bret_points',
+    'base_points_total',
+    'belief_points_total',
+    'pd_points_total',
+]
 
-# ISO-639 code
-# for example: de, fr, ja, ko, zh-hans
+
+# Language and currency settings
 LANGUAGE_CODE = 'en'
-
-# e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = True
 
+# Room configurations
 ROOMS = [
-dict(
-    name='Prolific_1',
-    display_name='Prolific_1',
-
-),
-#dict(
-   #3 name='Prolific_2',
-   # display_name='Prolific_2',
-   # use_secure_urls=False
-#),
-#dict(
-   # name='Prolific_3',
-   # display_name='Prolific_3',
-   # use_secure_urls=False
-#),
-#dict(
-  #  name='SONA_1',
-   # display_name='SONA_1',
-   # use_secure_urls=False
-#),
-#dict(
-    #name='SONA_2',
-    #display_name='SONA_2',
-    #use_secure_urls=False
-#),
-#dict(
-    #name='SONA_3',
-    #display_name='SONA_3',
-    #use_secure_urls=False
-#),
-#dict(
-   # name='BELSS',
-   # display_name='BELSS',
-   # participant_label_file='_rooms/belss.txt',
-    #use_secure_urls=True
-#),
-#dict(
-    #name='30463',
-    #display_name='Intro to Cognitive Science',
-   # use_secure_urls=False
-#),
-#dict(
-    #name='live_demo',
-    #display_name='Room for Live Demo (No Participant Labels)',
-#)
+    dict(
+        name='Prolific_1',
+        display_name='Prolific_1',
+    ),
 ]
 
+# Admin credentials
 ADMIN_USERNAME = 'admin'
-# for security, best to set admin password in an environment variable
-ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
+ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')  # Uses environment variable for security
 
 # Production mode setting
 OTREE_PRODUCTION = environ.get('OTREE_PRODUCTION', '1')  # Default to production mode
 
-# Debug mode
-DEBUG = False  # Ensure DEBUG is off in production
+# Debug mode (change to `True` only for development)
+DEBUG = False  # ✅ Change to `True` during local testing if needed
 
+# Demo page intro
+DEMO_PAGE_INTRO_HTML = "Here are some oTree games."
 
-DEMO_PAGE_INTRO_HTML = """
-Here are some oTree games.
-"""
-
-
+# Secret key for security
 SECRET_KEY = '3105680212138'
 
+# Installed apps
 INSTALLED_APPS = ['otree']
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',  # Ensures security best practices
+    'django.middleware.csrf.CsrfViewMiddleware',  # ✅ Enables CSRF protection
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]

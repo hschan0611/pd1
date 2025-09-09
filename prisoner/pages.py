@@ -12,6 +12,10 @@ from otree.api import Page, WaitPage
 import random
 import time
 
+# Last round of the whole experiment (Game 1 + Game 2)
+FINAL_ROUND = Constants.num_rounds_game1 + Constants.num_rounds_game2
+
+
 class Instructions_1(Page):
     def is_displayed(self):
         return self.subsession.round_number == 1
@@ -137,26 +141,22 @@ class EndRound(Page):
             return Constants.num_rounds_game1 < self.round_number <= Constants.num_rounds_game1 + Constants.num_rounds_game2
 
 
-class End(Page):
-    def is_displayed(self):
-        # Calculate the overall last round in the entire experiment
-        total_last_round = Constants.num_rounds_game1 + Constants.num_rounds_game2
-
-        # Display the End page if the session has ended (either time-based or last round)
-        return self.session.vars.get('alive', True) == False or self.subsession.round_number == total_last_round
-
-    def vars_for_template(self):
-        # Calculate the overall last round in the entire experiment
-        total_last_round = Constants.num_rounds_game1 + Constants.num_rounds_game2
-        return {
-            'total_last_round': total_last_round,
-            'num_matches': Constants.num_matches_game1 + Constants.num_matches_game2
-        }
-
 class Game1Intro(Page):
     def is_displayed(self):
         # Show this page only once at the start of Game 1
         return self.round_number == 1
+
+    def vars_for_template(self):
+        """
+        Add the payoff matrix for Game 1 so it can be displayed in the template.
+        """
+        return {
+            'both_cooperate_payoff': Constants.both_cooperate_payoff_1,
+            'betray_payoff': Constants.betray_payoff_1,
+            'both_defect_payoff': Constants.both_defect_payoff_1,
+            'betrayed_payoff': Constants.betrayed_payoff_1
+        }
+
 
 class DecisionGame1(Page):
     form_model = 'player'
@@ -183,24 +183,31 @@ class ResultsWaitPageGame1(WaitPage):
 
 class ResultsGame1(Page):
     def vars_for_template(self):
-        other_player = self.player.other_player()
+        other = self.player.other_player()
 
-        return {
-            'both_cooperate_payoff': Constants.both_cooperate_payoff_1,
-            'betray_payoff': Constants.betray_payoff_1,
-            'both_defect_payoff': Constants.both_defect_payoff_1,
-            'betrayed_payoff': Constants.betrayed_payoff_1,
-            'my_decision': self.player.decision,
-            'opponent_decision': other_player.decision,
-            'same_choice': self.player.decision == other_player.decision,
-            'both_cooperate': self.player.decision == "Action 1" and other_player.decision == "Action 1",
-            'both_defect': self.player.decision == "Action 2" and other_player.decision == "Action 2",
-            'i_cooperate_he_defects': self.player.decision == "Action 1" and other_player.decision == "Action 2",
-            'i_defect_he_cooperates': self.player.decision == "Action 2" and other_player.decision == "Action 1",
-            'game_number': 1,
-            'match_number': self.subsession.match_number,
-            'round_number': self.subsession.round_in_match_number,
-        }
+        # Safety net: compute if not done yet
+        if (self.player.decision is not None and other.decision is not None
+            and self.player.stage_points == 0 and self.player.payoff == 0):
+            self.player.set_payoff()
+
+        return dict(
+            both_cooperate_payoff = Constants.both_cooperate_payoff_1,
+            betray_payoff         = Constants.betray_payoff_1,
+            both_defect_payoff    = Constants.both_defect_payoff_1,
+            betrayed_payoff       = Constants.betrayed_payoff_1,
+            my_decision           = self.player.decision,
+            opponent_decision     = other.decision,
+            same_choice           = self.player.decision == other.decision,
+            both_cooperate        = self.player.decision == "Action 1" and other.decision == "Action 1",
+            both_defect           = self.player.decision == "Action 2" and other.decision == "Action 2",
+            i_cooperate_he_defects= self.player.decision == "Action 1" and other.decision == "Action 2",
+            i_defect_he_cooperates= self.player.decision == "Action 2" and other.decision == "Action 1",
+
+            # Show ONLY PD points on Results page:
+            round_stage_points    = self.player.stage_points,
+            # (optional) round_total_points = self.player.payoff,
+        )
+
 
     def is_displayed(self):
         return self.round_number <= Constants.num_rounds_game1
@@ -233,8 +240,20 @@ class EndRoundGame1(Page):
 
 class Game2Intro(Page):
     def is_displayed(self):
-        # Show this page only once, at the start of Game 2
+        # Show this page only once at the start of Game 2
         return self.round_number == Constants.num_rounds_game1 + 1
+
+    def vars_for_template(self):
+        """
+        Add the payoff matrix for Game 2 so it can be displayed in the template.
+        """
+        return {
+            'both_cooperate_payoff': Constants.both_cooperate_payoff_2,
+            'betray_payoff': Constants.betray_payoff_2,
+            'both_defect_payoff': Constants.both_defect_payoff_2,
+            'betrayed_payoff': Constants.betrayed_payoff_2
+        }
+
 
 class DecisionGame2(Page):
     form_model = 'player'
@@ -261,24 +280,29 @@ class ResultsWaitPageGame2(WaitPage):
 
 class ResultsGame2(Page):
     def vars_for_template(self):
-        other_player = self.player.other_player()
+        other = self.player.other_player()
 
-        return {
-            'both_cooperate_payoff': Constants.both_cooperate_payoff_2,
-            'betray_payoff': Constants.betray_payoff_2,
-            'both_defect_payoff': Constants.both_defect_payoff_2,
-            'betrayed_payoff': Constants.betrayed_payoff_2,
-            'my_decision': self.player.decision,
-            'opponent_decision': other_player.decision,
-            'same_choice': self.player.decision == other_player.decision,
-            'both_cooperate': self.player.decision == "Action 1" and other_player.decision == "Action 1",
-            'both_defect': self.player.decision == "Action 2" and other_player.decision == "Action 2",
-            'i_cooperate_he_defects': self.player.decision == "Action 1" and other_player.decision == "Action 2",
-            'i_defect_he_cooperates': self.player.decision == "Action 2" and other_player.decision == "Action 1",
-            'game_number': 2,
-            'match_number': self.subsession.match_number,
-            'round_number': self.subsession.round_in_match_number,
-        }
+        if (self.player.decision is not None and other.decision is not None
+            and self.player.stage_points == 0 and self.player.payoff == 0):
+            self.player.set_payoff()
+
+        return dict(
+            both_cooperate_payoff = Constants.both_cooperate_payoff_2,
+            betray_payoff         = Constants.betray_payoff_2,
+            both_defect_payoff    = Constants.both_defect_payoff_2,
+            betrayed_payoff       = Constants.betrayed_payoff_2,
+            my_decision           = self.player.decision,
+            opponent_decision     = other.decision,
+            same_choice           = self.player.decision == other.decision,
+            both_cooperate        = self.player.decision == "Action 1" and other.decision == "Action 1",
+            both_defect           = self.player.decision == "Action 2" and other.decision == "Action 2",
+            i_cooperate_he_defects= self.player.decision == "Action 1" and other.decision == "Action 2",
+            i_defect_he_cooperates= self.player.decision == "Action 2" and other.decision == "Action 1",
+
+            # Show ONLY PD points on Results page:
+            round_stage_points    = self.player.stage_points,
+            # (optional) round_total_points = self.player.payoff,
+        )
 
 
     def is_displayed(self):
@@ -311,6 +335,45 @@ class EndRoundGame2(Page):
         return Constants.num_rounds_game1 < self.round_number <= Constants.num_rounds_game1 + Constants.num_rounds_game2
 
 
+class BeliefElicitation(Page):
+    form_model = 'player'
+    form_fields = ['belief', 'belief_interacted']
+    template_name = 'prisoner/belief_elicitation.html'
+
+    def before_next_page(self):
+        # mark that the belief task ran this round so set_payoff() awards the prize
+        self.player.belief_asked = True
+
+    def vars_for_template(self):
+        if self.subsession.active_game == 1:
+            return dict(
+                game_number=1,
+                both_cooperate_payoff=Constants.both_cooperate_payoff_1,
+                betray_payoff=Constants.betray_payoff_1,
+                both_defect_payoff=Constants.both_defect_payoff_1,
+                betrayed_payoff=Constants.betrayed_payoff_1,
+            )
+        else:
+            return dict(
+                game_number=2,
+                both_cooperate_payoff=Constants.both_cooperate_payoff_2,
+                betray_payoff=Constants.betray_payoff_2,
+                both_defect_payoff=Constants.both_defect_payoff_2,
+                betrayed_payoff=Constants.betrayed_payoff_2,
+            )
+
+class BeliefElicitationGame1(BeliefElicitation):
+    def is_displayed(self):
+        # All rounds that belong to Game 1
+        return self.subsession.active_game == 1 and self.round_number <= Constants.num_rounds_game1
+
+class BeliefElicitationGame2(BeliefElicitation):
+    def is_displayed(self):
+        # All rounds that belong to Game 2
+        return (self.subsession.active_game == 2 and
+                Constants.num_rounds_game1 < self.round_number <= (Constants.num_rounds_game1 + Constants.num_rounds_game2))
+
+
 class End(Page):
     def is_displayed(self):
         # Calculate the overall last round in the entire experiment (sum of rounds in both games)
@@ -328,9 +391,156 @@ class End(Page):
             'total_matches': total_matches,
         }
 
+class BombIntro(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    def vars_for_template(self):
+        return dict(
+            num_boxes = Constants.bret_num_boxes,
+            max_points = Constants.bret_max_points,
+            pay_if_hit = Constants.bret_pay_if_hit,
+        )
+
+
+class BombDecision(Page):
+    form_model = 'player'
+    form_fields = ['bret_boxes']
+
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    def before_next_page(self):
+        self.player.draw_bomb_and_set_bret_payoff()
+
+
+class BombResults(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    def vars_for_template(self):
+        p = self.player
+        return dict(
+            k = p.bret_boxes,
+            bomb = p.bret_bomb_box,
+            hit = p.bret_hit,
+            bret_points = p.bret_points,
+            num_boxes = Constants.bret_num_boxes,
+            max_points = Constants.bret_max_points,
+            pay_if_hit = Constants.bret_pay_if_hit,
+        )
+
+class Demographics(Page):
+    form_model = 'player'
+    form_fields = [
+        'age',
+        'gender', 'gender_self_describe',
+        'education', 'education_other',
+        'econ_courses',
+        'native_english',
+    ]
+
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    def error_message(self, values):
+        errors = {}
+        if values.get('gender') == 'Self-describe' and not values.get('gender_self_describe'):
+            errors['gender_self_describe'] = "Please specify your gender or choose a different option."
+        if values.get('education') == 'Other' and not values.get('education_other'):
+            errors['education_other'] = "Please specify your education or choose a different option."
+        return errors or None
+
+    def before_next_page(self):
+        self.participant.vars['demographics_done'] = True
+
+
+class StoreTotals(WaitPage):
+    """Final step inside 'prisoner'.
+    Randomly select 1 supergame from Game 1 and 1 supergame from Game 2.
+    For each selected supergame, pay the sum over its rounds of (stage_points + belief_prize).
+    Optionally add BRET. Save into participant.vars for the payment app.
+    """
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    @staticmethod
+    def _group_by_game_and_match(rounds):
+        # returns { 1: {match_number: [rounds...]}, 2: {match_number: [rounds...] } }
+        grouped = {1: {}, 2: {}}
+        for r in rounds:
+            g = r.subsession.active_game
+            m = r.subsession.match_number
+            grouped[g].setdefault(m, []).append(r)
+        # sort inside each match by within-match index (optional, clarity only)
+        for g in (1, 2):
+            for m in grouped[g]:
+                grouped[g][m].sort(key=lambda rr: rr.subsession.round_in_match_number)
+        return grouped
+
+    def after_all_players_arrive(self):
+        import random
+        from otree.api import Currency as c
+
+        for p in self.group.get_players():
+            pp = p.participant
+            rounds = p.in_all_rounds()
+            grouped = self._group_by_game_and_match(rounds)
+
+            # ---------- pick ONE match in Game 1 ----------
+            g1_match = None
+            g1_rounds = []
+            if grouped[1]:
+                g1_match = random.choice(list(grouped[1].keys()))
+                g1_rounds = grouped[1][g1_match]
+
+            # separate subtotals for selected G1 supergame
+            g1_pd_points = sum((r.stage_points or 0) for r in g1_rounds)
+            g1_belief_points = sum((r.belief_prize or 0) for r in g1_rounds)
+            g1_points_sum = g1_pd_points + g1_belief_points
+
+            # ---------- pick ONE match in Game 2 ----------
+            g2_match = None
+            g2_rounds = []
+            if grouped[2]:
+                g2_match = random.choice(list(grouped[2].keys()))
+                g2_rounds = grouped[2][g2_match]
+
+            # separate subtotals for selected G2 supergame
+            g2_pd_points = sum((r.stage_points or 0) for r in g2_rounds)
+            g2_belief_points = sum((r.belief_prize or 0) for r in g2_rounds)
+            g2_points_sum = g2_pd_points + g2_belief_points
+
+            # ---------- BRET ----------
+            bret_points = int(pp.vars.get('bret_points', 0))
+
+            # totals (POINTS)
+            grand_points = g1_points_sum + g2_points_sum + bret_points
+
+            # save for the payment app (now these keys exist)
+            pp.vars.update({
+                'chosen_g1_match': g1_match,
+                'chosen_g2_match': g2_match,
+
+                'g1_pd_points': int(g1_pd_points),
+                'g1_belief_points': int(g1_belief_points),
+                'g2_pd_points': int(g2_pd_points),
+                'g2_belief_points': int(g2_belief_points),
+
+                'bret_points': int(bret_points),
+                'grand_points': int(grand_points),
+
+                # optional combined per-game sums
+                'g1_points_sum': int(g1_points_sum),
+                'g2_points_sum': int(g2_points_sum),
+            })
+
+            # optional: set participant.payoff now
+            pp.payoff = c(grand_points)
+
 
 page_sequence = [
-    # Instructions and Quiz
+    # === Instructions and Quiz ===
     Instructions_1,
     Instructions_2,
     Instructions_4,
@@ -341,14 +551,26 @@ page_sequence = [
     Q4, Q4Result,
     Instructions_3,
 
-    # Game 1 Pages
+    # === GAME 1 ===
     Game1Intro,
-    DecisionGame1, ResultsWaitPageGame1, ResultsGame1, EndRoundGame1,
+    DecisionGame1,
+    BeliefElicitationGame1,
+    ResultsWaitPageGame1,
+    ResultsGame1,
+    EndRoundGame1,
 
-    # Game 2 Intro and Pages
+    # === GAME 2 ===
     Game2Intro,
-    DecisionGame2, ResultsWaitPageGame2, ResultsGame2, EndRoundGame2,
+    DecisionGame2,
+    BeliefElicitationGame2,
+    ResultsWaitPageGame2,
+    ResultsGame2,
+    EndRoundGame2,
 
-    # End page
-    End
+    # === END OF EXPERIMENT ===
+    BombIntro,       # BRET intro
+    BombDecision,    # BRET choice
+    BombResults,     # BRET reveal
+    Demographics,    # demographics survey
+    StoreTotals,    # final payout page
 ]

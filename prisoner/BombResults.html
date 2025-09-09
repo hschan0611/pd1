@@ -1,0 +1,11 @@
+{{ block title }}Results{{ endblock }}
+{{ block content }}
+<p>You chose <b>{{ k }}</b> boxes. The bomb was in box <b>{{ bomb }}</b>.</p>
+{% if hit %}
+  <p>You hit the bomb. Bomb-task payoff: <b>{{ bret_points }} points </b></p>
+{% else %}
+  <p>You avoided the bomb. Bomb-task payoff: <b>{{ k }} points × 0.16 = {{ bret_points }} points </b></p>
+{% endif %}
+<p>This payoff will be added to your final payment.</p>
+{{ next_button }}
+{{ endblock }}

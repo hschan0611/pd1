@@ -2,14 +2,14 @@
 {% load otree %}
 
 {% block title %}
-    Game {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}: Results
+    Game {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}: Results
 {% endblock %}
 
 {% block content %}
-    <h3>Game {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}</h3>
+    <h3>Game {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}</h3>
 
     <h4>Payoff Table</h4>
-    <table class='table table-bordered text-center' style='width: auto; margin: auto'>
+    <table class="table table-bordered text-center" style="width:auto; margin:auto">
         <tr>
             <th></th>
             <th>Action 1</th>
@@ -17,21 +17,22 @@
         </tr>
         <tr>
             <th>You: Action 1</th>
-            <td>{{ both_cooperate_payoff }}, {{ both_cooperate_payoff }}</td>
-            <td>{{ betrayed_payoff }}, {{ betray_payoff }}</td>
+            <td>{{ Constants.both_cooperate_payoff_2 }}, {{ Constants.both_cooperate_payoff_2 }}</td>
+            <td>{{ Constants.betrayed_payoff_2 }}, {{ Constants.betray_payoff_2 }}</td>
         </tr>
         <tr>
             <th>You: Action 2</th>
-            <td>{{ betray_payoff }}, {{ betrayed_payoff }}</td>
-            <td>{{ both_defect_payoff }}, {{ both_defect_payoff }}</td>
+            <td>{{ Constants.betray_payoff_2 }}, {{ Constants.betrayed_payoff_2 }}</td>
+            <td>{{ Constants.both_defect_payoff_2 }}, {{ Constants.both_defect_payoff_2 }}</td>
         </tr>
     </table>
 
     <p>Your choice: {{ my_decision }}</p>
-
     <p>Other participant's choice: {{ opponent_decision }}</p>
 
-    <p>Your payoff for this round: {{ player.payoff }}</p>
+    <!-- Show ONLY PD points here (no belief bonus) -->
+    <p>Your payoff for this round: <strong>{{ round_stage_points }}</strong> points</p>
+    <p><em>Any bonus from the belief task will be summarized on the final payment page.</em></p>
 
     {% next_button %}
 {% endblock %}
