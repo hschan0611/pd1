@@ -1,0 +1,132 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}Bomb Risk (Box Grid){% endblock %}
+
+{% block content %}
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat({{ cols|length }}, {{ box_size }}px);
+    grid-auto-rows: {{ box_size }}px;
+    gap: {{ gap }}px;
+    user-select: none;
+    margin: 16px 0 10px 0;
+  }
+  .cell {
+    border: 2px solid #d3d7dc;
+    background: #f5f7fa;               /* light by default; will tint when selected */
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    transition: transform .05s ease, background .15s ease, border-color .15s ease;
+  }
+  .cell:hover { transform: scale(1.02); }
+  .cell.clicked { background: #eaf6ff; border-color: #9cd1ff; }
+  .pill { padding: 6px 12px; background: #eef2f7; border-radius: 999px; font-size: 14px; margin-right: 8px; }
+  .controls { display: flex; gap: 12px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+</style>
+
+<p>
+  Click boxes to collect points. One hidden box contains a <strong>bomb</strong>.
+  If you select the bomb, your BRET points are <strong>0</strong>.
+  You may stop at any time to keep your current points.
+</p>
+
+<div class="controls">
+  <span class="pill">Selected: <span id="selCount">0</span> / {{ total_boxes }}</span>
+  <span class="pill">Points if safe: <span id="pointsPreview">0</span> / {{ max_points }}</span>
+  <span class="pill">Status: <span id="statusText">Choosing…</span></span>
+</div>
+
+<form method="post" id="bret-form">
+  <input type="hidden" name="bret_clicked_boxes_json" id="clicked_json">
+  <input type="hidden" name="bret_stopped" id="stopped">
+
+  <div id="grid" class="grid">
+    {% for r in rows %}
+      {% for c in cols %}
+        <div class="cell" data-id="{{ r }}-{{ c }}"></div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  <div class="controls">
+    <button id="stopBtn" class="btn btn-primary" type="button">Stop &amp; Collect</button>
+    <button id="submitBtn" class="btn btn-success" type="submit" style="display:none;">Continue</button>
+    <button id="clearBtn" class="btn btn-outline-secondary" type="button">Clear</button>
+  </div>
+</form>
+
+<script>
+(function() {
+  const grid = document.getElementById('grid');
+  const form = document.getElementById('bret-form');
+  const clickedInput = document.getElementById('clicked_json');
+  const stoppedInput = document.getElementById('stopped');
+  const selCountEl = document.getElementById('selCount');
+  const statusEl = document.getElementById('statusText');
+  const pointsPreviewEl = document.getElementById('pointsPreview');
+  const stopBtn = document.getElementById('stopBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const clearBtn = document.getElementById('clearBtn');
+
+  const MAX_BOXES = {{ total_boxes }};
+  const MAX_POINTS = {{ max_points }};
+  let selected = new Set();
+  let locked = false;
+
+  function recompute() {
+    selCountEl.textContent = String(selected.size);
+    const pts = Math.round((selected.size / MAX_BOXES) * MAX_POINTS);
+    pointsPreviewEl.textContent = String(pts);
+    clickedInput.value = JSON.stringify(Array.from(selected)); // ["r-c","r-c",...]
+  }
+
+  grid.addEventListener('click', function(e) {
+    if (locked) return;
+    const cell = e.target.closest('.cell');
+    if (!cell) return;
+    const id = cell.dataset.id;
+
+    if (selected.has(id)) {
+      selected.delete(id);
+      cell.classList.remove('clicked');
+    } else {
+      selected.add(id);
+      cell.classList.add('clicked');
+    }
+    recompute();
+  });
+
+  stopBtn.addEventListener('click', function() {
+    if (locked) return;
+    locked = true;
+    stoppedInput.value = 'True';
+    statusEl.textContent = 'Stopped — collecting points';
+    stopBtn.style.display = 'none';
+    submitBtn.style.display = 'inline-block';
+    // freeze UI
+    grid.style.pointerEvents = 'none';
+    recompute();
+  });
+
+  clearBtn.addEventListener('click', function() {
+    if (locked) return;
+    selected.forEach(id => {
+      const el = grid.querySelector(`.cell[data-id="${id}"]`);
+      if (el) el.classList.remove('clicked');
+    });
+    selected.clear();
+    recompute();
+  });
+
+  // init
+  stoppedInput.value = 'False';
+  recompute();
+})();
+</script>
+
+{% endblock %}

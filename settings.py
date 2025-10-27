@@ -14,8 +14,8 @@ SESSION_CONFIGS = [
         display_name='Infinitely Repeated PD',
         num_demo_participants=2,
         app_sequence=['prisoner', 'payment'],
-        real_world_currency_per_point=1 / 32,  # 32 pts = $1
-        participation_fee=8.00,  # $8 show-up fee
+        real_world_currency_per_point=1 / 25,  # 32 pts = $1
+        participation_fee=5.00,  # $5 show-up fee
     ),
 ]
 

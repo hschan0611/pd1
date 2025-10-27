@@ -2,7 +2,7 @@
 {% load otree %}
 
 {% block title %}
-    Game {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}: Make Your Choice
+    Part {{ game_number }} - Match {{ match_number }} - Round {{ round_number }}: Make Your Choice
 {% endblock %}
 
 {% block content %}
@@ -12,17 +12,22 @@
     <div class="form-group required">
         <table class="table table-bordered text-center" style="width: auto; margin: auto">
             <tr>
-                <th colspan="2"></th>
-                <th colspan="2">The Other Participant</th>
-            </tr>
+    <th colspan=2 rowspan=2></th>
+    <th colspan=2>The Other Participant</th>
+    </tr>
+    <tr>
+    <th>Action 1</th>
+    <th>Action 2</th>
+    </tr>
+
             <tr>
                 <th rowspan="2"><span class="rotate90">You</span></th>
-                <td><button name="decision" value="Action 1" class="btn btn-primary btn-large">I choose Action 1</button></td>
+                <td><button name="decision" value="Action 1" class="btn btn-primary btn-large">Action 1</button></td>
                 <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
                 <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
             </tr>
             <tr>
-                <td><button name="decision" value="Action 2" class="btn btn-primary btn-large">I choose Action 2</button></td>
+                <td><button name="decision" value="Action 2" class="btn btn-primary btn-large">Action 2</button></td>
                 <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
                 <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
             </tr>

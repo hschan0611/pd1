@@ -1,4 +1,7 @@
-{{block styles}}
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block styles %}
 <style>
 .container {
   justify-content: space-between;
@@ -7,19 +10,45 @@
   display: flex;
 }
 </style>
-{{endblock}}
+{% endblock %}
 
-{{ block title }}
+{% block title %}
 Question 3
-{{ endblock }}
-{{ block content }}
-    {{ formfields }}
+{% endblock %}
 
-<div class="container">
-  <div class="btn-holder">
-    <button class="otree-btn-next btn btn-primary">Submit</button>
+{% block content %}
+
+  <p><strong>Payoff Table</strong></p>
+  <table class="table table-bordered text-center" style="width:auto; margin:auto">
+    <tr>
+      <th colspan="2" rowspan="2"></th>
+      <th colspan="2">The Other Participant</th>
+    </tr>
+    <tr>
+      <th>Action 1</th>
+      <th>Action 2</th>
+    </tr>
+    <tr>
+      <th rowspan="2">You</th>
+      <th>Action 1</th>
+      <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+      <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
+    </tr>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+      <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  {{ formfields }}
+
+  <div class="container">
+    <div class="btn-holder">
+      <button class="otree-btn-next btn btn-primary">Submit</button>
+    </div>
   </div>
-</div>
 
-
-{{ endblock }}
+{% endblock %}

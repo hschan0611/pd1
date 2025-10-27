@@ -16,7 +16,7 @@ def get_quiz_data():
         dict(
             name='Q2',
             solution=False,
-            explanation="The length of a match is randomly determined. After each round, there is a 75% probability that the match will continue for at least another round.",
+            explanation="Once a match ends, you will be randomly paired with another person for a new match",
         ),
         dict(
             name='Q3',

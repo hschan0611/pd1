@@ -2,22 +2,23 @@
 {% load otree static %}
 
 {% block title %}
-Instructions
+Instructions for Part 1 and Part 2
 {% endblock %}
 
 {% block content %}
 <div class="card card-body bg-light instructions">
     <p class="big">
+
     <p>
-        This is a computerized decision-making experiment in which you will be paid based on the decisions you make. The entire experiment will take approximately 90 minutes. At the end of the experiment, you will be paid privately and in cash for your participation. All information collected will remain anonymous, ensuring that neither the experimenter nor other participants can link your identity to your decisions. We are interested in your individual choices, so there are no right or wrong answers. You will also receive a printed copy of these instructions, which you may refer to at any time during the session.
+    In this experiment, you will participate in <strong>two parts: Part 1 and Part 2</strong>.
     </p>
 
-    <p><strong>The Experiment</strong></p>
     <p>
-        In this experiment, you will participate in <strong>two games</strong>. Your decisions in the first game will not affect what happens in the second game. You will be able to earn points in both games, and your final payment will depend on the points you earn in both games.
+    The two parts are independent: your decisions in Part 1 will not affect what happens in Part 2.
+    You will earn points in both parts, and your final payment will be based on your combined earnings.
     </p>
 
-    <p>Each game consists of sequences, referred to as <strong>matches</strong>. The length of a match, referred to as <strong>the number of rounds</strong>, is randomly determined. <strong>After each round, there is a {{ continuation_chance }}% probability that the match will continue for at least another round</strong>. So, for instance:</p>
+    <p>Each part consists of sequences, referred to as <strong>matches</strong>. The length of a match, referred to as <strong>the number of rounds</strong>, is <strong>randomly determined</strong>. <strong>After each round, there is a {{ continuation_chance }}% probability that the match will continue for at least another round</strong>. For example:</p>
 
     <ul>
         <li>If you are in round 2, the probability there will be a third round is {{ continuation_chance }}%.</li>
@@ -31,11 +32,11 @@ Instructions
         <li>If the die comes up {{ continuation_chance }} or less, the match continues to another round.</li>
     </ul>
 
-    <p>Once a match ends, you will be randomly paired with another person for a new match.</p>
+    <p><strong>Once a match ends, you will be randomly paired with another person for a new match</strong>.</p>
 
     <p>In each round, you and the person you are paired with choose simultaneously between two actions, <strong>Action 1</strong> and <strong>Action 2</strong>.</p>
 
-    <p>This table shows the payoff associated with each choice for <strong>Game 1</strong>:</p>
+    <p>This table shows the payoffs associated with each choice in <strong>Part 1</strong>:</p>
 
     <table class='table table-bordered text-center' style='width: auto; margin: auto'>
         <tr>
@@ -59,31 +60,29 @@ Instructions
         </tr>
     </table>
 
-    <p><strong>The first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with.</strong></p>
+    <p>The first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with. </p>
 
     <ul>
-        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 1</strong>, you each make {{ Constants.both_cooperate_payoff_1 }}.</li>
-        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 2</strong>, you make {{ Constants.betrayed_payoff_1 }} while the other makes {{ Constants.betray_payoff_1 }}.</li>
-        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 1</strong>, you make {{ Constants.betray_payoff_1 }} while the other makes {{ Constants.betrayed_payoff_1 }}.</li>
-        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 2</strong>, you each make {{ Constants.both_defect_payoff_1 }}.</li>
+        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 1</strong>, you each make {{ Constants.both_cooperate_payoff_1 }} points.</li>
+        <li>If you select <strong>Action 1</strong> and the other selects <strong>Action 2</strong>, you make {{ Constants.betrayed_payoff_1 }} points while the other makes {{ Constants.betray_payoff_1 }} points.</li>
+        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 1</strong>, you make {{ Constants.betray_payoff_1 }} points while the other makes {{ Constants.betrayed_payoff_1 }} points.</li>
+        <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 2</strong>, you each make {{ Constants.both_defect_payoff_1 }} points.</li>
     </ul>
 
     <p>Once you and the person you are paired with have made your choices, those choices will be shown. </p>
 
-    <p>After completing this first game, you will participate in a second game with different payoffs. The format and rules will remain the same, but the specific payoff amounts will change.</p>
+    <p>
+    After completing <strong>Part 1</strong>, you will participate in <strong>Part 2</strong>.
+    The format and rules will remain the same, but the specific payoff amounts may change.
+    </p>
 
-    <p><strong>Payment</strong></p>
-<p>
- In this experiment, you will earn points through the decisions that you make. Your earnings will be determined as follows:
-</p>
-<ul>
-  <li>Game 1: At the end of the session, one of the matches from Game 1 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
-  <li>Game 2: Similarly, one of the matches from Game 2 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
-</ul>
+    <p>In this experiment, you will earn points through the decisions that you make. Your earnings will be determined as follows:</p>
+    <ul>
+      <li><strong>Part 1:</strong> At the end of the session, one of the matches from Part 1 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
+      <li><strong>Part 2:</strong> Similarly, one of the matches from Part 2 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
+    </ul>
 
-<p>
-All points are converted at a rate of 32 points = $1, and you also receive a $8 show-up fee.
-</p>
+    <p>All points are converted at a rate of 25 points = $1, and you also receive a $5 show-up fee.</p>
 
     {% next_button %}
 </div>

@@ -1,40 +1,62 @@
-{{ block title }}
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
 Question 1
-{{ endblock }}
+{% endblock %}
 
-{{ block content }}
-<h5>Result</h5>
-{{ formfields }}
+{% block content %}
 
-{{ if show_solutions }}
-    {{ if player.quiz_Q1_correct }}
-    <p class="solution-correct">
-        Your answer is correct.<br>
-        <br>
-        <i>"{{ Q1.explanation }}"</i><br>
-    </p>
-    {{ else }}
-    <p class="solution-incorrect">
-        Your answer is incorrect. The correct answer is {{ Q1.solution }}.<br>
-        <br>
-        <i>"{{ Q1.explanation }}"</i><br>
-    </p>
-    {{ endif }}
-{{ endif }}
+  <p><strong>Payoff Table</strong></p>
+  <table class="table table-bordered text-center" style="width:auto; margin:auto">
+    <tr>
+      <th colspan="2" rowspan="2"></th>
+      <th colspan="2">The Other Participant</th>
+    </tr>
+    <tr>
+      <th>Action 1</th>
+      <th>Action 2</th>
+    </tr>
+    <tr>
+      <th rowspan="2">You</th>
+      <th>Action 1</th>
+      <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+      <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
+    </tr>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+      <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+    </tr>
+  </table>
 
-<button class="otree-btn-next btn btn-primary">Next Question</button>
+  <hr>
 
+  <h5>Result</h5>
+  {{ formfields }}
+
+  {% if show_solutions %}
+      {% if player.quiz_Q1_correct %}
+      <p class="solution-correct">
+          Your answer is correct.<br><br>
+          <i>"{{ Q1.explanation }}"</i><br>
+      </p>
+      {% else %}
+      <p class="solution-incorrect">
+          Your answer is incorrect. The correct answer is {{ Q1.solution }}.<br><br>
+          <i>"{{ Q1.explanation }}"</i><br>
+      </p>
+      {% endif %}
+  {% endif %}
+
+  <button class="otree-btn-next btn btn-primary">Next Question</button>
+
+{% endblock %}
+
+{% block styles %}
 <style>
-    input {
-        pointer-events: none;
-    }
-
-    .solution-incorrect {
-        color: darkred;
-    }
-
-    .solution-correct {
-        color: green;
-    }
+  input { pointer-events: none; }
+  .solution-incorrect { color: darkred; }
+  .solution-correct { color: green; }
 </style>
-{{ endblock }}
+{% endblock %}

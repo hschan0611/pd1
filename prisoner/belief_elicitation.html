@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-    Predict the Other Participant's Move
+    Predict the Other Participant's Action
 {% endblock %}
 
 {% block content %}
@@ -20,58 +20,63 @@
 <h4>Payment and Accuracy</h4>
 <p>Your payment depends on the accuracy of your answer. You have the highest chance of winning the prize when you report your <strong>true belief</strong> about how likely the other participant is to choose Action 1 or Action 2.</p>
 
-<p>Your belief report does not affect anyone else’s decisions and is not shown to other participants.</p>
+<p>Your belief report does not affect anyone else’s decisions and is not shown to other participants. </p>
 
-<h4>(Optional) How the Payment Works</h4>
+<p>At the end of the experiment, one match will be randomly selected in each game, and only the belief tasks within that selected match will count toward your final payment. </p>
+
+
+<h4>How the Payment Works</h4>
 <p>If you are interested, here is how your belief submission affects your payment:</p>
 <ul>
   <li>The computer randomly draws two numbers between 0 and 100. Draws are independent in the sense that the outcome of the first draw in no way affects the outcome of the second draw.</li>
-  <li>If the person you are paired with chose 1 in that round and the number you indicated as the likelihood that the other chose 1 is larger than either of the two draws, you earn the <strong>8-point prize</strong>; otherwise you earn 0 points.</li>
-  <li>If the person you are paired with chose 2 in that round and the number you indicated as the likelihood that the other chose 2 is larger than either of the two draws, you earn the <strong>8-point prize</strong>; otherwise you earn 0 points.</li>
+  <li>If the person you are paired with chose 1 in that round and the number you indicated as the likelihood that the other chose 1 is larger than either of the two draws, you earn the 12 points; otherwise you earn 0 points.</li>
+  <li>If the person you are paired with chose 2 in that round and the number you indicated as the likelihood that the other chose 2 is larger than either of the two draws, you earn the 12 points; otherwise you earn 0 points.</li>
 </ul>
 
 <hr>
 
-<h3>Current Game Payoff Matrix (Game{% if subsession.active_game == 1 %}1{% else %}2{% endif %})</h3>
-<p><em>In each cell, the first number is <strong>your</strong> payoff and the second number is your <strong>opponent’s</strong> payoff.</em></p>
+<h3>Payoff Table (Part {% if subsession.active_game == 1 %}1{% else %}2{% endif %})</h3>
+<p>Below is the payoff table. In each cell, the first number is <strong>your</strong> payoff and the second is the <strong>other participant’s</strong> payoff.</p>
 
-<table class="table table-bordered text-center" style="max-width:600px">
-  <thead>
+<table class="table table-bordered text-center" style="width:auto; margin:auto">
+  <tr>
+    <th colspan="2" rowspan="2"></th>
+    <th colspan="2">The Other Participant</th>
+  </tr>
+  <tr>
+    <th>Action 1</th>
+    <th>Action 2</th>
+  </tr>
+
+  {% if subsession.active_game == 1 %}
+    <!-- Part 1 payoffs (cooperate=48) -->
     <tr>
-      <th rowspan="2" class="align-middle">You \ Other</th>
-      <th colspan="2">Other's Action</th>
-    </tr>
-    <tr>
+      <th rowspan="2">You</th>
       <th>Action 1</th>
-      <th>Action 2</th>
+      <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+      <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
     </tr>
-  </thead>
-  <tbody>
-    {% if subsession.active_game == 1 %}
-      <tr>
-        <th>Action 1</th>
-        <td>({{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }})</td>
-        <td>({{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }})</td>
-      </tr>
-      <tr>
-        <th>Action 2</th>
-        <td>({{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }})</td>
-        <td>({{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }})</td>
-      </tr>
-    {% else %}
-      <tr>
-        <th>Action 1</th>
-        <td>({{ Constants.both_cooperate_payoff_2 }}, {{ Constants.both_cooperate_payoff_2 }})</td>
-        <td>({{ Constants.betrayed_payoff_2 }}, {{ Constants.betray_payoff_2 }})</td>
-      </tr>
-      <tr>
-        <th>Action 2</th>
-        <td>({{ Constants.betray_payoff_2 }}, {{ Constants.betrayed_payoff_2 }})</td>
-        <td>({{ Constants.both_defect_payoff_2 }}, {{ Constants.both_defect_payoff_2 }})</td>
-      </tr>
-    {% endif %}
-  </tbody>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+      <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+    </tr>
+  {% else %}
+    <!-- Part 2 payoffs (cooperate=32) -->
+    <tr>
+      <th rowspan="2">You</th>
+      <th>Action 1</th>
+      <td>{{ Constants.both_cooperate_payoff_2 }}, {{ Constants.both_cooperate_payoff_2 }}</td>
+      <td>{{ Constants.betrayed_payoff_2 }}, {{ Constants.betray_payoff_2 }}</td>
+    </tr>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_2 }}, {{ Constants.betrayed_payoff_2 }}</td>
+      <td>{{ Constants.both_defect_payoff_2 }}, {{ Constants.both_defect_payoff_2 }}</td>
+    </tr>
+  {% endif %}
 </table>
+
 
 <h3>Enter Your Belief</h3>
 <p>Use the slider to indicate your belief (0-100%) about how likely the other participant is to choose Action 1:</p>

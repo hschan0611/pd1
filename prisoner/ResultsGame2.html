@@ -2,26 +2,29 @@
 {% load otree %}
 
 {% block title %}
-    Game {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}: Results
+    Part {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}: Results
 {% endblock %}
 
 {% block content %}
-    <h3>Game {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}</h3>
 
     <h4>Payoff Table</h4>
     <table class="table table-bordered text-center" style="width:auto; margin:auto">
         <tr>
-            <th></th>
+            <th colspan="2" rowspan="2"></th>
+            <th colspan="2">The Other Participant</th>
+        </tr>
+        <tr>
             <th>Action 1</th>
             <th>Action 2</th>
         </tr>
         <tr>
-            <th>You: Action 1</th>
+            <th rowspan="2"><span class="rotate90">You</span></th>
+            <th>Action 1</th>
             <td>{{ Constants.both_cooperate_payoff_2 }}, {{ Constants.both_cooperate_payoff_2 }}</td>
             <td>{{ Constants.betrayed_payoff_2 }}, {{ Constants.betray_payoff_2 }}</td>
         </tr>
         <tr>
-            <th>You: Action 2</th>
+            <th>Action 2</th>
             <td>{{ Constants.betray_payoff_2 }}, {{ Constants.betrayed_payoff_2 }}</td>
             <td>{{ Constants.both_defect_payoff_2 }}, {{ Constants.both_defect_payoff_2 }}</td>
         </tr>

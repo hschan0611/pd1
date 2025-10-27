@@ -1,24 +1,69 @@
 {% extends "global/Page.html" %}
-{% block title %}Bomb Task{% endblock %}
+{% load otree static %}
+
+{% block title %}
+    Instructions for Part 3
+{% endblock %}
 
 {% block content %}
+<div class="card card-body bg-light instructions">
+    <p>
+       Now you will start a new part. On the screen, you will see a field composed of <strong>100 boxes</strong>, arranged in a 10 × 10 grid (the numbers on each box will not be visible):
+    </p>
+
+   <style>
+  .bret-grid { border-collapse: collapse; margin: auto; }
+  .bret-grid td {
+    width: 30px; height: 30px;
+    border: 1px solid #999;
+    text-align: center; vertical-align: middle;
+    font-size: 12px; color: #666;
+    background: #2f2f2f; color: #ddd; /* dark like the task */
+  }
+</style>
+
+<table class="bret-grid">
+  {% for row in grid %}
+    <tr>
+      {% for idx in row %}
+        <td>{{ idx }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
 <p>
-  You have now reached <strong>a new task</strong>, separate from the two games you just played.
-  This task is called the <em>Bomb Task</em>. The points you earn here will be added to your final payment.
-</p>
+    </p>
+    <p>
+        Every two seconds, a box will be collected, starting with Box #1 (top left) and ending with Box #100 (bottom right).
+        You earn <strong>1 point for every box collected</strong>. Once collected, the box changes from dark grey to light grey, and your earnings are updated accordingly.
+        At any moment, you can see the number of boxes collected so far and your potential earnings.
+    </p>
 
-<p>You will choose how many boxes (0–{{ num_boxes }}) to collect.</p>
-<ul>
-  <li>Exactly one box hides a bomb, equally likely among all boxes.</li>
-  <li>If the bomb is among the boxes you collect, your payoff is <strong>{{ pay_if_hit }}</strong> points.</li>
-  <li>Otherwise, you earn <strong>0.16 points</strong> per box you collect.</li>
-</ul>
+    <p>
+        Behind one of these boxes, a <strong>bomb</strong> is hidden that destroys everything collected in this part of the experiment.
+        You do not know the location of the bomb, and even if you collect the bomb you will not be told until the end of the experiment.
+        Your task is to decide when to stop the process by clicking the <strong>Stop</strong> button at any time.
+    </p>
 
-<p>For example:</p>
-<ul>
-  <li>If you choose 20 boxes and do <em>not</em> hit the bomb, you earn 20 × 0.16 = <strong>3.2 points</strong>.</li>
-  <li>If you hit the bomb, you earn <strong>0 points</strong>.</li>
-</ul>
+    <h4>Payment</h4>
+    <ul>
+        <li>If, when you hit <strong>Stop</strong>, none of the boxes you have collected contain the bomb, you receive the total amount accumulated.</li>
+        <li>If, when you hit <strong>Stop</strong>, you have collected the bomb box, you earn <strong>$0</strong>.</li>
+    </ul>
 
-{{ next_button }}
+    <p>
+        This means the earnings you see on the screen are <strong>only potential earnings</strong>.
+        You will earn them only if none of the boxes you collected contained the bomb.
+    </p>
+
+    <h4>Location of the Bomb</h4>
+    <p>
+        The computer randomly selects a number between 1 and 100, with all numbers equally likely.
+        The bomb is placed in the box with that number.
+    </p>
+
+    <p><strong>Press “Next” to continue.</strong></p>
+
+    {% next_button %}
+</div>
 {% endblock %}

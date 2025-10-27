@@ -1,25 +1,38 @@
-{{ block title }}
-Question 1
-{{ endblock }}
+{% extends "global/Page.html" %}
+{% load otree static %}
 
-{{ block content }}
-<form method="post">
-    <label>True/False: The first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with.</label>
-    <div>
-        <input type="radio" id="true" name="quiz_Q1_response" value="True">
-        <label for="true">True</label><br>
-        <input type="radio" id="false" name="quiz_Q1_response" value="False">
-        <label for="false">False</label><br>
-    </div>
+{% block title %}Question 1{% endblock %}
 
-    <!-- Display errors if any -->
-    {{ formfield_errors "quiz_Q1_response" }}
+{% block content %}
+  <p><strong>Payoff Table</strong></p>
+  <table class="table table-bordered text-center" style="width:auto; margin:auto">
+    <tr>
+      <th colspan="2" rowspan="2"></th>
+      <th colspan="2">The Other Participant</th>
+    </tr>
+    <tr>
+      <th>Action 1</th>
+      <th>Action 2</th>
+    </tr>
+    <tr>
+      <th rowspan="2">You</th>
+      <th>Action 1</th>
+      <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+      <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
+    </tr>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+      <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+    </tr>
+  </table>
 
-    <div class="container">
-        <div class="btn-holder">
-            <button type="submit" class="otree-btn-next btn btn-primary">Submit</button>
-        </div>
-    </div>
-</form>
-{{ endblock }}
+  <hr>
+
+  {{ formfield "quiz_Q1_response" }}
+  {{ formfield_errors "quiz_Q1_response" }}
+
+    <button class="otree-btn-next btn btn-primary">Submit</button>
+{% endblock %}
+
 

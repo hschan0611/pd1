@@ -391,44 +391,163 @@ class End(Page):
             'total_matches': total_matches,
         }
 
+# --- bombINTRO  ---
 class BombIntro(Page):
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
 
     def vars_for_template(self):
+        cols = Constants.bret_cols
+        nums = list(range(1, Constants.bret_num_boxes + 1))
+        grid = [nums[i:i+cols] for i in range(0, len(nums), cols)]
         return dict(
-            num_boxes = Constants.bret_num_boxes,
-            max_points = Constants.bret_max_points,
-            pay_if_hit = Constants.bret_pay_if_hit,
+            grid=grid,
+            num_boxes=Constants.bret_num_boxes,
+            points_per_box=Constants.bret_points_per_box,
+            pay_if_hit=Constants.bret_pay_if_hit,
+            interval_sec=Constants.bret_interval_sec,
         )
 
 
-class BombDecision(Page):
+# --- NEW: a Start page that draws the bomb & starts the timer ---
+class BombStart(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+    def vars_for_template(self):
+        # build a 10x10 grid of numbers 1–100
+        grid = []
+        counter = 1
+        for _ in range(10):          # 10 rows
+            row = []
+            for _ in range(10):      # 10 cols
+                row.append(counter)
+                counter += 1
+            grid.append(row)
+
+        return dict(
+            num_boxes=Constants.bret_num_boxes,
+            points_per_box=Constants.bret_points_per_box,
+            pay_if_hit=Constants.bret_pay_if_hit,
+            interval_sec=Constants.bret_interval_sec,
+            grid=grid,
+        )
+
+
+    def before_next_page(self):
+        # When participant clicks "Start", start the sequential BRET
+        self.player.bret_start()
+
+
+# --- NEW: a Stop page that shows the live counter (client-side),
+#          and when user clicks "Stop", we freeze and score server-side. ---
+class BombStop(Page):
     form_model = 'player'
-    form_fields = ['bret_boxes']
+    template_name = 'prisoner/BRETStop.html'
 
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
 
+    def vars_for_template(self):
+        cols = Constants.bret_cols
+        nums = list(range(1, Constants.bret_num_boxes + 1))
+        grid = [nums[i:i+cols] for i in range(0, len(nums), cols)]
+        start_ts = int(self.player.bret_start_time * 1000) if self.player.bret_start_time else int(time.time() * 1000)
+        return dict(
+            start_ts_ms=start_ts,
+            interval_sec=Constants.bret_interval_sec,
+            num_boxes=Constants.bret_num_boxes,
+            points_per_box=Constants.bret_points_per_box,
+            grid=grid,                        # <-- added
+        )
+
     def before_next_page(self):
-        self.player.draw_bomb_and_set_bret_payoff()
+        self.player.bret_stop_and_score()
 
 
+
+# --- RESULTS: read the new sequential fields ---
 class BombResults(Page):
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
 
     def vars_for_template(self):
         p = self.player
+        # compute bomb row/col for display
+        bomb_idx = p.bret_bomb_box
+        r = (bomb_idx - 1) // Constants.bret_cols + 1
+        c = (bomb_idx - 1) % Constants.bret_cols + 1
         return dict(
-            k = p.bret_boxes,
-            bomb = p.bret_bomb_box,
-            hit = p.bret_hit,
-            bret_points = p.bret_points,
-            num_boxes = Constants.bret_num_boxes,
-            max_points = Constants.bret_max_points,
-            pay_if_hit = Constants.bret_pay_if_hit,
+            collected=p.bret_collected_count,
+            bomb_idx=bomb_idx,
+            bomb_rc=f'{r}-{c}',
+            hit=p.bret_hit,
+            points=p.bret_points,
+            points_per_box=Constants.bret_points_per_box,
+            num_boxes=Constants.bret_num_boxes,
         )
+
+
+class CRTIntro(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+
+class CRT_Q1(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    form_model = 'player'
+    form_fields = ['crt_q1']
+
+    def error_message(self, values):
+        v = values.get('crt_q1')
+        if v is None or not isinstance(v, int):
+            return "Please enter an integer (no decimals)."
+    def before_next_page(self):
+        self.player.crt_q1_correct = (self.player.crt_q1 == 5)
+
+class CRT_Q1_Result(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    def vars_for_template(self):
+        return dict(correct=self.player.crt_q1_correct)
+class CRT_Q2(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    form_model = 'player'
+    form_fields = ['crt_q2']
+
+    def error_message(self, values):
+        v = values.get('crt_q2')
+        if v is None or not isinstance(v, int):
+            return "Please enter an integer (no decimals)."
+    def before_next_page(self):
+        self.player.crt_q2_correct = (self.player.crt_q2 == 5)
+
+class CRT_Q2_Result(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    def vars_for_template(self):
+        return dict(correct=self.player.crt_q2_correct)
+
+class CRT_Q3(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    form_model = 'player'
+    form_fields = ['crt_q3']
+
+    def error_message(self, values):
+        v = values.get('crt_q3')
+        if v is None or not isinstance(v, int):
+            return "Please enter an integer (no decimals)."
+
+    def before_next_page(self):
+        self.player.crt_q3_correct = (self.player.crt_q3 == 47)
+
+class CRT_Q3_Result(Page):
+    def is_displayed(self):
+        return self.round_number == FINAL_ROUND
+    def vars_for_template(self):
+        return dict(correct=self.player.crt_q3_correct)
 
 class Demographics(Page):
     form_model = 'player'
@@ -539,38 +658,48 @@ class StoreTotals(WaitPage):
             pp.payoff = c(grand_points)
 
 
+
+    # --- Page sequence ---
+
+
 page_sequence = [
-    # === Instructions and Quiz ===
-    Instructions_1,
-    Instructions_2,
-    Instructions_4,
-    Instructions,
-    Q1, Q1Result,
-    Q2, Q2Result,
-    Q3, Q3Result,
-    Q4, Q4Result,
-    Instructions_3,
+Instructions_1,
+Instructions_2,
+Instructions_4,
+Instructions,
+Q1, Q1Result,
+Q2, Q2Result,
+Q3, Q3Result,
+Q4, Q4Result,
+Instructions_3,
 
-    # === GAME 1 ===
-    Game1Intro,
-    DecisionGame1,
-    BeliefElicitationGame1,
-    ResultsWaitPageGame1,
-    ResultsGame1,
-    EndRoundGame1,
+# === GAME 1 ===
+Game1Intro,
+DecisionGame1,
+BeliefElicitationGame1,
+ResultsWaitPageGame1,
+ResultsGame1,
+EndRoundGame1,
 
-    # === GAME 2 ===
-    Game2Intro,
-    DecisionGame2,
-    BeliefElicitationGame2,
-    ResultsWaitPageGame2,
-    ResultsGame2,
-    EndRoundGame2,
+# === GAME 2 ===
+Game2Intro,
+DecisionGame2,
+BeliefElicitationGame2,
+ResultsWaitPageGame2,
+ResultsGame2,
+EndRoundGame2,
 
-    # === END OF EXPERIMENT ===
-    BombIntro,       # BRET intro
-    BombDecision,    # BRET choice
-    BombResults,     # BRET reveal
-    Demographics,    # demographics survey
-    StoreTotals,    # final payout page
+BombIntro,
+BombStart,
+BombStop,
+BombResults,
+
+CRTIntro,
+CRT_Q1, CRT_Q1_Result,
+CRT_Q2, CRT_Q2_Result,
+CRT_Q3, CRT_Q3_Result,
+
+Demographics,
+StoreTotals,
 ]
+

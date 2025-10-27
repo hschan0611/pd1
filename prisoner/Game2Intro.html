@@ -2,36 +2,41 @@
 {% load otree static %}
 
 {% block title %}
-    Welcome to Game 2
+    Welcome to Part 2
 {% endblock %}
 
 {% block content %}
 <p>
-    You are now beginning <strong>Game 2</strong>.
-    The rules and structure are the same as in Game 1, but the payoffs differ.
-    Please review the new payoff matrix carefully before making your decisions.
+    You are now beginning <strong>Part 2</strong>.
+    The rules and structure are the same as in Part 1, but the payoffs differ.
+    Please review the new payoff table carefully before making your decisions.
 </p>
 
-    <h4>Payoff Matrix</h4>
-    <p>Below is the payoff matrix for Game 2:</p>
+    <p>Below is the payoff table for Part 2: </p>
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th></th>
-            <th>Other chooses Action 1</th>
-            <th>Other chooses Action 2</th>
-        </tr>
-        <tr>
-            <th>You choose Action 1</th>
-            <td>{{ both_cooperate_payoff }}, {{ both_cooperate_payoff }}</td>
-            <td>{{ betray_payoff }}, {{ betrayed_payoff }}</td>
-        </tr>
-        <tr>
-            <th>You choose Action 2</th>
-            <td>{{ betrayed_payoff }}, {{ betray_payoff }}</td>
-            <td>{{ both_defect_payoff }}, {{ both_defect_payoff }}</td>
-        </tr>
-    </table>
+<p><em>Note: In each cell, the first number is <strong>your</strong> payoff and the second number is <strong>the other participant’s</strong> payoff.</em></p>
+
+    <table class="table table-bordered text-center" style="width:auto; margin:auto">
+    <tr>
+      <th colspan="2" rowspan="2"></th>
+      <th colspan="2">The Other Participant</th>
+    </tr>
+    <tr>
+      <th>Action 1</th>
+      <th>Action 2</th>
+    </tr>
+    <tr>
+      <th rowspan="2">You</th>
+      <th>Action 1</th>
+      <td>{{ Constants.both_cooperate_payoff_2 }}, {{ Constants.both_cooperate_payoff_2 }}</td>
+      <td>{{ Constants.betrayed_payoff_2 }}, {{ Constants.betray_payoff_2 }}</td>
+    </tr>
+    <tr>
+      <th>Action 2</th>
+      <td>{{ Constants.betray_payoff_2 }}, {{ Constants.betrayed_payoff_2 }}</td>
+      <td>{{ Constants.both_defect_payoff_2 }}, {{ Constants.both_defect_payoff_2 }}</td>
+    </tr>
+  </table>
 
     <br>
     {% next_button %}

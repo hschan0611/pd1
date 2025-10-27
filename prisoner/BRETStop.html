@@ -1,0 +1,97 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}Part 3 - Stop{% endblock %}
+
+{% block content %}
+<p>
+  Stop when you want.
+</p>
+
+<style>
+  .bret-wrap { max-width: 720px; margin: 0 auto; }
+  .bret-grid { border-collapse: collapse; margin: 16px auto; }
+  .bret-grid td {
+    width: 26px; height: 26px;
+    border: 1px solid #b9c0c7;
+    background: #3f444a;  /* dark grey initially */
+    transition: background-color .25s ease;
+  }
+  .bret-grid td.collected { background: #dfe6ee; } /* light grey when collected */
+  .info { text-align:center; margin: 10px 0 16px; }
+  .stop-card { text-align:center; padding: 18px; border: 1px solid #e2e5e9; border-radius: 10px; }
+  .stop-btn { margin-top: 14px; }
+  /* hide Next until Stop is clicked */
+  .otree-btn-next { display: none; margin-top: 14px; }
+</style>
+
+<div class="bret-wrap">
+  <!-- grid -->
+  <table class="bret-grid" id="bret-grid" aria-label="Collected boxes grid">
+    {% for row in grid %}
+      <tr>
+        {% for idx in row %}
+          <td data-idx="{{ idx }}"></td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+
+  <!-- counters + stop -->
+  <div class="stop-card">
+    <div class="info"><b>Collected boxes:</b> <span id="count">0</span> / {{ num_boxes }}</div>
+    <div class="info"><b>Potential points:</b> <span id="points">0</span></div>
+
+    <button type="button" class="btn btn-danger stop-btn" onclick="showNext()">Stop</button>
+    {% next_button %}
+  </div>
+</div>
+
+<script>
+  const startTs   = {{ start_ts_ms }};
+  const interval  = {{ interval_sec }} * 1000;
+  const maxBoxes  = {{ num_boxes }};
+  const ptsPerBox = {{ points_per_box }};
+
+  const gridCells = Array.from(document.querySelectorAll('#bret-grid td'));
+  const countEl   = document.getElementById('count');
+  const pointsEl  = document.getElementById('points');
+
+  let lastCount = 0;
+  let stopped   = false;
+
+  function computeCount(nowMs){
+    const elapsed = Math.max(0, nowMs - startTs);
+    const count = Math.floor(elapsed / interval) + 1; // Box #1 at t=0
+    return Math.min(maxBoxes, Math.max(0, count));
+  }
+
+  function paint(toCount){
+    for (let i = lastCount; i < toCount; i++) {
+      if (i >= 0 && i < gridCells.length) gridCells[i].classList.add('collected');
+    }
+    lastCount = toCount;
+  }
+
+  function tick(){
+    if (stopped) return;
+    const now   = Date.now();
+    const count = computeCount(now);
+    if (count !== lastCount) paint(count);
+    countEl.textContent  = count;
+    pointsEl.textContent = count * ptsPerBox;
+
+    if (count >= maxBoxes) showNext(); // auto-stop at 100
+    requestAnimationFrame(tick);
+  }
+
+  function showNext(){
+    if (stopped) return;
+    stopped = true;
+    document.querySelector('.otree-btn-next').style.display = 'inline-block';
+    document.querySelector('.stop-btn').style.display = 'none';
+  }
+
+  requestAnimationFrame(tick);
+</script>
+{% endblock %}

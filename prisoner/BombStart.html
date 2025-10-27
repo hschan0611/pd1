@@ -1,0 +1,42 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}Part 3 – Start{% endblock %}
+
+{% block content %}
+<p>
+  On the next page, the task will begin. Please A box is collected every {{ interval_sec }} seconds,
+  starting from #1. Each collected box is worth <strong>{{ points_per_box }} point</strong>.
+  If the bomb (hidden randomly in #1–#{{ num_boxes }}) is among your collected boxes,
+  your payoff here is <strong>0</strong>.
+</p>
+
+<p>Here is the 10×10 grid of boxes (numbers are just for illustration):</p>
+
+<style>
+  .bret-grid { border-collapse: collapse; margin: auto; }
+  .bret-grid td {
+    width: 30px; height: 30px;
+    border: 1px solid #999;
+    text-align: center; vertical-align: middle;
+    font-size: 12px; color: #ddd;
+    background: #2f2f2f;
+  }
+</style>
+
+<table class="bret-grid">
+  {% for row in grid %}
+    <tr>
+      {% for idx in row %}
+        <td>{{ idx }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<p class="mt-3"><strong>Press Start when ready:</strong></p>
+<form method="post">
+  <button type="submit" class="btn btn-primary">Start</button>
+</form>
+{% endblock %}
+

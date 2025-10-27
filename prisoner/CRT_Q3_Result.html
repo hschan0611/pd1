@@ -1,0 +1,14 @@
+{% extends "global/Page.html" %}
+
+{% block title %}Question 3 – Result{% endblock %}
+
+{% block content %}
+{% if correct %}
+  <p style="color:green"><strong>Correct.</strong> The answer is 47 days.</p>
+{% else %}
+  <p style="color:#b00020"><strong>Incorrect.</strong> The correct answer is 47 days.</p>
+{% endif %}
+
+{% next_button %}
+{% endblock %}
+
