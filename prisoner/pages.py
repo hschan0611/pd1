@@ -341,37 +341,48 @@ class BeliefElicitation(Page):
     template_name = 'prisoner/belief_elicitation.html'
 
     def before_next_page(self):
-        # mark that the belief task ran this round so set_payoff() awards the prize
         self.player.belief_asked = True
 
     def vars_for_template(self):
-        if self.subsession.active_game == 1:
-            return dict(
-                game_number=1,
-                both_cooperate_payoff=Constants.both_cooperate_payoff_1,
-                betray_payoff=Constants.betray_payoff_1,
-                both_defect_payoff=Constants.both_defect_payoff_1,
-                betrayed_payoff=Constants.betrayed_payoff_1,
-            )
+        # game number from subsession flag
+        game_number = 1 if self.subsession.active_game == 1 else 2
+
+        # use what you actually store; fall back to sensible defaults
+        match_number = getattr(self.subsession, 'match_number', 1)
+        round_in_match = getattr(self.subsession, 'round_in_match_number', self.round_number)
+
+        if game_number == 1:
+            both_cooperate_payoff = Constants.both_cooperate_payoff_1
+            betray_payoff = Constants.betray_payoff_1
+            both_defect_payoff = Constants.both_defect_payoff_1
+            betrayed_payoff = Constants.betrayed_payoff_1
         else:
-            return dict(
-                game_number=2,
-                both_cooperate_payoff=Constants.both_cooperate_payoff_2,
-                betray_payoff=Constants.betray_payoff_2,
-                both_defect_payoff=Constants.both_defect_payoff_2,
-                betrayed_payoff=Constants.betrayed_payoff_2,
-            )
+            both_cooperate_payoff = Constants.both_cooperate_payoff_2
+            betray_payoff = Constants.betray_payoff_2
+            both_defect_payoff = Constants.both_defect_payoff_2
+            betrayed_payoff = Constants.betrayed_payoff_2
+
+        return dict(
+            game_number=game_number,
+            match_number=match_number,
+            round_in_match=round_in_match,
+            both_cooperate_payoff=both_cooperate_payoff,
+            betray_payoff=betray_payoff,
+            both_defect_payoff=both_defect_payoff,
+            betrayed_payoff=betrayed_payoff,
+        )
 
 class BeliefElicitationGame1(BeliefElicitation):
     def is_displayed(self):
-        # All rounds that belong to Game 1
         return self.subsession.active_game == 1 and self.round_number <= Constants.num_rounds_game1
 
 class BeliefElicitationGame2(BeliefElicitation):
     def is_displayed(self):
-        # All rounds that belong to Game 2
-        return (self.subsession.active_game == 2 and
-                Constants.num_rounds_game1 < self.round_number <= (Constants.num_rounds_game1 + Constants.num_rounds_game2))
+        return (
+            self.subsession.active_game == 2 and
+            Constants.num_rounds_game1 < self.round_number <= (Constants.num_rounds_game1 + Constants.num_rounds_game2)
+        )
+
 
 
 class End(Page):
@@ -576,26 +587,50 @@ class Demographics(Page):
 
 class StoreTotals(WaitPage):
     """Final step inside 'prisoner'.
-    Randomly select 1 supergame from Game 1 and 1 supergame from Game 2.
-    For each selected supergame, pay the sum over its rounds of (stage_points + belief_prize).
-    Optionally add BRET. Save into participant.vars for the payment app.
+
+    For each game (Part 1 and Part 2):
+      - PD payoff = sum of stage_points within ONE randomly selected match.
+      - Belief payoff = ONE randomly selected round within a DIFFERENT randomly selected match.
+        *If a game has fewer than 2 matches, no belief payoff is paid for that game.*
+    Also adds:
+      - BRET points in participant.vars['bret_points'].
+      - CRT (Part 4) points: 20 per correct answer across 3 questions.
+    Saves everything into participant.vars for the payment app to display.
     """
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
 
     @staticmethod
     def _group_by_game_and_match(rounds):
-        # returns { 1: {match_number: [rounds...]}, 2: {match_number: [rounds...] } }
         grouped = {1: {}, 2: {}}
         for r in rounds:
             g = r.subsession.active_game
             m = r.subsession.match_number
             grouped[g].setdefault(m, []).append(r)
-        # sort inside each match by within-match index (optional, clarity only)
         for g in (1, 2):
             for m in grouped[g]:
                 grouped[g][m].sort(key=lambda rr: rr.subsession.round_in_match_number)
         return grouped
+
+    @staticmethod
+    def _choose_two_distinct_matches_or_none(match_dict):
+        """
+        Return:
+          (pd_match_num, pd_rounds), (belief_match_num, belief_rounds)
+        - If >= 2 matches exist: returns 2 DISTINCT matches (by construction).
+        - If exactly 1 match exists: returns (that_match, rounds) for PD, and (None, []) for belief.
+        - If 0 matches: returns (None, []), (None, []).
+        """
+        if not match_dict:
+            return (None, []), (None, [])
+        keys = list(match_dict.keys())
+        if len(keys) >= 2:
+            import random
+            pd_match, belief_match = random.sample(keys, 2)  # distinct
+            return (pd_match, match_dict[pd_match]), (belief_match, match_dict[belief_match])
+        # only one match → PD uses it; belief is unavailable
+        k = keys[0]
+        return (k, match_dict[k]), (None, [])
 
     def after_all_players_arrive(self):
         import random
@@ -606,55 +641,74 @@ class StoreTotals(WaitPage):
             rounds = p.in_all_rounds()
             grouped = self._group_by_game_and_match(rounds)
 
-            # ---------- pick ONE match in Game 1 ----------
-            g1_match = None
-            g1_rounds = []
-            if grouped[1]:
-                g1_match = random.choice(list(grouped[1].keys()))
-                g1_rounds = grouped[1][g1_match]
+            # ====== GAME 1 ======
+            (g1_pd_match, g1_pd_rounds), (g1_belief_match, g1_belief_rounds) = \
+                self._choose_two_distinct_matches_or_none(grouped.get(1, {}))
 
-            # separate subtotals for selected G1 supergame
-            g1_pd_points = sum((r.stage_points or 0) for r in g1_rounds)
-            g1_belief_points = sum((r.belief_prize or 0) for r in g1_rounds)
-            g1_points_sum = g1_pd_points + g1_belief_points
+            g1_pd_points = sum((r.stage_points or 0) for r in g1_pd_rounds) if g1_pd_rounds else 0
 
-            # ---------- pick ONE match in Game 2 ----------
-            g2_match = None
-            g2_rounds = []
-            if grouped[2]:
-                g2_match = random.choice(list(grouped[2].keys()))
-                g2_rounds = grouped[2][g2_match]
+            g1_belief_points = 0.0
+            g1_belief_round_no = None
+            if g1_belief_rounds:
+                chosen_r = random.choice(g1_belief_rounds)
+                g1_belief_points = float(chosen_r.belief_prize or 0)
+                # show the round index within the belief match:
+                g1_belief_round_no = chosen_r.subsession.round_in_match_number
 
-            # separate subtotals for selected G2 supergame
-            g2_pd_points = sum((r.stage_points or 0) for r in g2_rounds)
-            g2_belief_points = sum((r.belief_prize or 0) for r in g2_rounds)
-            g2_points_sum = g2_pd_points + g2_belief_points
+            # ====== GAME 2 ======
+            (g2_pd_match, g2_pd_rounds), (g2_belief_match, g2_belief_rounds) = \
+                self._choose_two_distinct_matches_or_none(grouped.get(2, {}))
 
-            # ---------- BRET ----------
-            bret_points = int(pp.vars.get('bret_points', 0))
+            g2_pd_points = sum((r.stage_points or 0) for r in g2_pd_rounds) if g2_pd_rounds else 0
 
-            # totals (POINTS)
-            grand_points = g1_points_sum + g2_points_sum + bret_points
+            g2_belief_points = 0.0
+            g2_belief_round_no = None
+            if g2_belief_rounds:
+                chosen_r = random.choice(g2_belief_rounds)
+                g2_belief_points = float(chosen_r.belief_prize or 0)
+                g2_belief_round_no = chosen_r.subsession.round_in_match_number
 
-            # save for the payment app (now these keys exist)
+            # ====== BRET ======
+            bret_points = float(pp.vars.get('bret_points', 0))
+
+            # ====== CRT (Part 4): 20 points per correct (3 questions) ======
+            crt_correct = 0
+            if getattr(p, 'crt_q1_correct', False): crt_correct += 1
+            if getattr(p, 'crt_q2_correct', False): crt_correct += 1
+            if getattr(p, 'crt_q3_correct', False): crt_correct += 1
+            CRT_POINTS_PER_CORRECT = 20
+            crt_points = CRT_POINTS_PER_CORRECT * crt_correct
+
+            # Totals
+            pd_points_total = float(g1_pd_points + g2_pd_points)
+            belief_points_total = float(g1_belief_points + g2_belief_points)
+            grand_points = pd_points_total + belief_points_total + bret_points + crt_points
+
+            # Save for payment page
             pp.vars.update({
-                'chosen_g1_match': g1_match,
-                'chosen_g2_match': g2_match,
+                # Matches & paying rounds
+                'g1_pd_match': g1_pd_match,
+                'g1_belief_match': g1_belief_match,
+                'g1_belief_round': g1_belief_round_no,
 
-                'g1_pd_points': int(g1_pd_points),
-                'g1_belief_points': int(g1_belief_points),
-                'g2_pd_points': int(g2_pd_points),
-                'g2_belief_points': int(g2_belief_points),
+                'g2_pd_match': g2_pd_match,
+                'g2_belief_match': g2_belief_match,
+                'g2_belief_round': g2_belief_round_no,
 
-                'bret_points': int(bret_points),
-                'grand_points': int(grand_points),
+                # Points breakdown
+                'g1_pd_points': float(g1_pd_points),
+                'g1_belief_points': float(g1_belief_points),
+                'g2_pd_points': float(g2_pd_points),
+                'g2_belief_points': float(g2_belief_points),
+                'bret_points': float(bret_points),
+                'crt_points': float(crt_points),
 
-                # optional combined per-game sums
-                'g1_points_sum': int(g1_points_sum),
-                'g2_points_sum': int(g2_points_sum),
+                'pd_points_total': pd_points_total,
+                'belief_points_total': belief_points_total,
+                'grand_points': float(grand_points),
             })
 
-            # optional: set participant.payoff now
+            # Points → Currency via SESSION_CONFIG
             pp.payoff = c(grand_points)
 
 

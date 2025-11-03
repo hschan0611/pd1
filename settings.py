@@ -12,9 +12,9 @@ SESSION_CONFIGS = [
     dict(
         name='prisoner',
         display_name='Infinitely Repeated PD',
-        num_demo_participants=8,
+        num_demo_participants=2,
         app_sequence=['prisoner', 'payment'],
-        real_world_currency_per_point=1 / 25,  # 32 pts = $1
+        real_world_currency_per_point=1 / 25,  # 25 pts = $1
         participation_fee=5.00,  # $5 show-up fee
     ),
 ]
@@ -37,8 +37,10 @@ USE_POINTS = True
 # Room configurations
 ROOMS = [
     dict(
-        name='Prolific_1',
-        display_name='Prolific_1',
+        name='lab',
+        display_name='Lab Room',
+        participant_label_file='_rooms/lab.txt',  # one label per line
+        use_secure_urls=False,                   # <-- so users TYPE their label
     ),
 ]
 

@@ -2,36 +2,33 @@
 {% load otree static %}
 
 {% block title %}
-    Predict the Other Participant's Action
+    Part {{ game_number }} - Match {{ match_number }} - Round {{ round_in_match  }}: Predict the Other Participant's Action
 {% endblock %}
 
 {% block content %}
 
-<p>Now, you will have one more task. In each round of a match, after you make your choice and before seeing the results, we will ask you to report your belief about the other participant’s choice (Action 1 or Action 2).</p>
+<p>Now, you will have one more task. In each round of a match, after you make your choice and before seeing the results, you will be asked to submit your belief about the choice made by the person you are paired with.</p>
 
-<p>To indicate your belief, use the slider below. The slider value represents your belief (as a percentage) that the other participant will choose <strong>Action 1</strong>.</p>
+<p>To indicate your belief, you will use the slider shown on the screen below. The position of the slider represents your best assessment of the likelihood (expressed as a percentage) that the person you are paired with chooses <strong>Action&nbsp;1</strong> or <strong>Action&nbsp;2</strong>.</p>
 
 <h4>Examples</h4>
 <ul>
-  <li><strong>60%</strong>: You believe the other participant has a <strong>60% chance</strong> of selecting Action 1 (and a <strong>40% chance</strong> of selecting Action 2).</li>
-  <li><strong>30%</strong>: You believe the other participant has a <strong>30% chance</strong> of selecting Action 1 (and a <strong>70% chance</strong> of selecting Action 2).</li>
+    <li>If your slider shows <strong>60%</strong>: You believe that the person you are paired with has a <strong>60% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a <strong>40% chance</strong> of selecting <strong>Action&nbsp;2</strong>).</li>
+    <li>If your slider shows <strong>30%</strong>: You believe that the person you are paired with has a <strong>30% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a <strong>70% chance</strong> of selecting <strong>Action&nbsp;2</strong>).</li>
 </ul>
 
-<h4>Payment and Accuracy</h4>
-<p>Your payment depends on the accuracy of your answer. You have the highest chance of winning the prize when you report your <strong>true belief</strong> about how likely the other participant is to choose Action 1 or Action 2.</p>
+<h4>Payment</h4>
+<p>Both in Part&nbsp;1 and Part&nbsp;2, one match will be randomly selected to count toward your payment, and you will receive the points associated with your choices. Furthermore, a different match will be randomly selected, and the computer will randomly choose one round from that match for payment in the belief task. The belief that you report in that round will determine your chance of winning a prize of 50&nbsp;points.</p>
 
-<p>Your belief report does not affect anyone else’s decisions and is not shown to other participants. </p>
+<p>To determine your payment in the belief task, the computer will randomly draw two numbers between 0 and 100. The two draws are independent, meaning that the outcome of the first draw in no way affects the outcome of the second draw.</p>
 
-<p>At the end of the experiment, one match will be randomly selected in each game, and only the belief tasks within that selected match will count toward your final payment. </p>
-
-
-<h4>How the Payment Works</h4>
-<p>If you are interested, here is how your belief submission affects your payment:</p>
 <ul>
-  <li>The computer randomly draws two numbers between 0 and 100. Draws are independent in the sense that the outcome of the first draw in no way affects the outcome of the second draw.</li>
-  <li>If the person you are paired with chose 1 in that round and the number you indicated as the likelihood that the other chose 1 is larger than either of the two draws, you earn the 12 points; otherwise you earn 0 points.</li>
-  <li>If the person you are paired with chose 2 in that round and the number you indicated as the likelihood that the other chose 2 is larger than either of the two draws, you earn the 12 points; otherwise you earn 0 points.</li>
+    <li>If the person you are paired with chose&nbsp;1 in that round, and the number you indicated as the likelihood that the other chose&nbsp;1 is larger than either of the two draws, you will win the prize.</li>
+    <li>If the person you are paired with chose&nbsp;2 in that round, and the number you indicated as the likelihood that the other chose&nbsp;2 is larger than either of the two draws, you will win the prize.</li>
 </ul>
+
+<p>The rules that determine your chance of winning this prize were purposefully designed so that you have the highest chance of winning when you report your true belief about how likely the person you are paired with chooses <strong>Action&nbsp;1</strong> or <strong>Action&nbsp;2</strong>. Your belief report does not affect anyone else’s decisions and is not shown to other participants.</p>
+
 
 <hr>
 
@@ -78,7 +75,7 @@
 </table>
 
 
-<h3>Enter Your Belief</h3>
+<h3><strong>Enter Your Belief</strong></h3>
 <p>Use the slider to indicate your belief (0-100%) about how likely the other participant is to choose Action 1:</p>
 
 <form method="post" id="belief-form">
@@ -91,6 +88,7 @@
     value="{{ player.field_maybe_none('belief') or 50 }}"
     oninput="updateBeliefValue(this.value)"
     aria-label="Belief that the other participant chooses Action 1 (0–100%)"
+    style="width: 80%; height: 30px;"
   >
 
   <p>Probability: <span id="belief-value">{{ player.field_maybe_none('belief') or 50 }}</span>%</p>
@@ -109,6 +107,7 @@
   <button type="button" id="next-button" class="btn btn-primary" onclick="confirmBelief()">Next</button>
 
 </form>
+
 
 <script>
   const slider = document.getElementById("belief-slider");
@@ -159,4 +158,3 @@
 </script>
 
 {% endblock %}
-

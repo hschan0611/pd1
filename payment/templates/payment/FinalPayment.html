@@ -1,52 +1,69 @@
 {% extends "global/Page.html" %}
+{% load otree %}
+
 {% block title %}The Experiment is Over!{% endblock %}
 
 {% block content %}
-<p>
 
-</p>
-<h3>Random selections:</h3>
-<ul>
-  <li><strong>Game 1</strong> – selected match:
-  <strong>{% if g1_match %}{{ g1_match }}{% else %}N/A{% endif %}</strong>
-</li>
-<li><strong>Game 2</strong> – selected match:
-  <strong>{% if g2_match %}{{ g2_match }}{% else %}N/A{% endif %}</strong>
-</li>
-</ul>
-<p>
-
-</p>
-<h3>Points by task:</h3>
+<h3>Random selections</h3>
 <ul>
   <li>
-    <strong>Game 1 (selected match)</strong><br>
-    &nbsp;&nbsp;• Actions subtotal: <strong>{{ g1_pd_points }}</strong> pts<br>
-    &nbsp;&nbsp;• Belief bonuses (all rounds in selected match): <strong>{{ g1_belief_points }}</strong> pts
+    <strong>Part 1</strong><br>
+    &nbsp;&nbsp;• PD match:
+    <strong>{% if g1_pd_match %}{{ g1_pd_match }}{% else %}-{% endif %}</strong><br>
+    &nbsp;&nbsp;• Belief match:
+    <strong>{% if g1_belief_match %}{{ g1_belief_match }}{% else %}-{% endif %}</strong><br>
+    &nbsp;&nbsp;• Belief paying round (within belief match):
+    <strong>{% if g1_belief_round %}{{ g1_belief_round }}{% else %}-{% endif %}</strong>
   </li>
-  <li>
-    <strong>Game 2 (selected match)</strong><br>
-    &nbsp;&nbsp;• Actions subtotal: <strong>{{ g2_pd_points }}</strong> pts<br>
-    &nbsp;&nbsp;• Belief bonuses (all rounds in selected match): <strong>{{ g2_belief_points }}</strong> pts
+
+  <li style="margin-top:10px;">
+    <strong>Part 2</strong><br>
+    &nbsp;&nbsp;• PD match:
+    <strong>{% if g2_pd_match %}{{ g2_pd_match }}{% else %}-{% endif %}</strong><br>
+    &nbsp;&nbsp;• Belief match:
+    <strong>{% if g2_belief_match %}{{ g2_belief_match }}{% else %}-{% endif %}</strong><br>
+    &nbsp;&nbsp;• Belief paying round (within belief match):
+    <strong>{% if g2_belief_round %}{{ g2_belief_round }}{% else %}-{% endif %}</strong>
   </li>
-  <li><strong>BRET Test</strong>: <strong>{{ bret_points }}</strong> pts</li>
-  <strong><li><u>Total points</u></strong>: <strong>{{ grand_points }}</strong> pts</li>
 </ul>
 
-<p>
-
-</p>
-
-<h3>Points to cash:</h3>
+<h3>Points by task</h3>
 <ul>
-  <li>Tasks → cash: <strong>{{ task_cash }}</strong></li>
-  <li>Show-up fee: <strong>{{ participation_fee }}</strong></li>
-  </ul>
-  <p>
+  <li>
+    <strong>Part 1</strong><br>
+    &nbsp;&nbsp;• Actions subtotal (from PD match):
+    <strong>{% if g1_pd_points %}{{ g1_pd_points }}{% else %}0{% endif %}</strong> pts<br>
+    &nbsp;&nbsp;• Belief bonus (one round from belief match):
+    <strong>{% if g1_belief_points %}{{ g1_belief_points }}{% else %}0{% endif %}</strong> pts
+  </li>
+  <li style="margin-top:6px;">
+    <strong>Part 2</strong><br>
+    &nbsp;&nbsp;• Actions subtotal (from PD match):
+    <strong>{% if g2_pd_points %}{{ g2_pd_points }}{% else %}0{% endif %}</strong> pts<br>
+    &nbsp;&nbsp;• Belief bonus (one round from belief match):
+    <strong>{% if g2_belief_points %}{{ g2_belief_points }}{% else %}0{% endif %}</strong> pts
+  </li>
+  <li style="margin-top:6px;">
+    <strong>Part 3</strong>:
+    <strong>{% if bret_points %}{{ bret_points }}{% else %}0{% endif %}</strong> pts
+  </li>
+  <li style="margin-top:6px;">
+    <strong>Part 4</strong>:
+    <strong>{% if crt_points %}{{ crt_points }}{% else %}0{% endif %}</strong> pts
+  </li>
+  <li style="margin-top:6px;">
+    <strong><u>Total points</u></strong>:
+    <strong>{% if grand_points %}{{ grand_points }}{% else %}0{% endif %}</strong> pts
+  </li>
+</ul>
 
-</p>
+<h3>Points to cash</h3>
+<ul>
+  <li>Tasks → cash: <strong>{% if task_cash %}{{ task_cash }}{% else %}$0.00{% endif %}</strong></li>
+  <li>Show-up fee: <strong>{% if participation_fee %}{{ participation_fee }}{% else %}$0.00{% endif %}</strong></li>
+</ul>
 
-  <h3>Total payment: <strong>{{ grand_total_cash }}</strong> </h3>
-
+<h3>Total payment: <strong>{% if grand_total_cash %}{{ grand_total_cash }}{% else %}$0.00{% endif %}</strong></h3>
 
 {% endblock %}

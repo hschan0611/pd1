@@ -17,9 +17,6 @@ def bounds_from_durations(durations):
     first = [1] + [x + 1 for x in last[:-1]]
     return last, first, last[-1]
 
-
-
-
 def calculate_rounds(num_matches, delta):
     """
     Calculate match duration, last rounds, and first rounds based on delta.
@@ -57,13 +54,13 @@ class Constants(BaseConstants):
     delta = 0.75
 
     # -------- Fixed supergame structure: each game sums to 48 rounds --------
-    num_matches_game1 = 12
-    match_duration_game1 = [4, 5, 3, 2, 4, 3, 5, 4, 1, 7, 5, 5]  # sum = 48
+    num_matches_game1 = 2
+    match_duration_game1 = [2,2]  # sum = 48
     last_rounds_game1, first_rounds_game1, last_round_game1 = bounds_from_durations(match_duration_game1)
     num_rounds_game1 = sum(match_duration_game1)  # 48
 
-    num_matches_game2 = 12
-    match_duration_game2 = [3, 4, 5, 2, 4, 6, 3, 4, 1, 7, 4, 5]  # sum = 48
+    num_matches_game2 = 2
+    match_duration_game2 = [2,2]  # sum = 48
     last_rounds_game2, first_rounds_game2, last_round_game2 = bounds_from_durations(match_duration_game2)
     num_rounds_game2 = sum(match_duration_game2)  # 48
 
@@ -155,12 +152,17 @@ class Player(BasePlayer):
     quiz_Q4_correct = models.BooleanField()
 
     # --- Belief task ---
-    belief = models.IntegerField(min=0, max=100, label="Probability (0-100) that the other player will choose Action 1?", initial=50)
+    belief = models.IntegerField(
+        min=0, max=100,
+        label="Probability (0-100) that the other player will choose Action 1?",
+        initial=50
+    )
     belief_interacted = models.BooleanField(initial=False)
     belief_asked = models.BooleanField(initial=False)
     belief_draw1 = models.IntegerField(initial=None)
     belief_draw2 = models.IntegerField(initial=None)
-    belief_prize = models.IntegerField(initial=0)  # 0 or 8
+    belief_prize = models.IntegerField(initial=0)
+
 
     # --- PD decision/points ---
     decision = models.StringField(choices=['Action 1', 'Action 2'], widget=widgets.RadioSelect)
@@ -214,7 +216,7 @@ class Player(BasePlayer):
             self.belief_draw2 = r2
             # pay 8 if opponent chose Action 1 and belief > at least one draw
             if self.other_player().decision == 'Action 1' and (self.belief > r1 or self.belief > r2):
-                prize_points = 12
+                prize_points = 50
         self.belief_prize = prize_points
 
         self.payoff = base_points + prize_points

@@ -6,35 +6,45 @@
 {% endblock %}
 
 {% block content %}
-    <p>Part 1 consists of a sequence of matches, and each match is made up of several rounds.
-        After a match ends, you will be randomly rematched with another participant for the following match.</p>
 
-    <p>Below is the payoff matrix for Part 1: </p>
+<p>Part 1 consists of a sequence of <strong>matches</strong>, and each match is made up of several <strong>rounds</strong>.</p>
 
-<p><em>Note: In each cell, the first number is <strong>your</strong> payoff and the second number is <strong>the other participant’s</strong> payoff.</em></p>
+<p>Each match will last for several rounds. After each round, there is a <strong>75% probability</strong> that the match will continue for another round.</p>
 
-    <table class="table table-bordered text-center" style="width:auto; margin:auto">
-    <tr>
-      <th colspan="2" rowspan="2"></th>
-      <th colspan="2">The Other Participant</th>
-    </tr>
-    <tr>
-      <th>Action 1</th>
-      <th>Action 2</th>
-    </tr>
-    <tr>
-      <th rowspan="2">You</th>
-      <th>Action 1</th>
-      <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
-      <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
-    </tr>
-    <tr>
-      <th>Action 2</th>
-      <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
-      <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
-    </tr>
-  </table>
+<p>You will interact with the <strong>same participant</strong> throughout a match.</p>
 
-    <br>
-    {% next_button %}
+<p>After a match ends, you will be <strong>randomly rematched</strong> with another participant for the next match.</p>
+
+<p>The table below shows the payoff matrix for Part 1.</p>
+
+<p><em>Note: In each cell, the first number is <strong>your</strong> payoff and the second number is the payoff of <strong>the person you are paired with</strong>.</em></p>
+
+
+<table class="table table-bordered text-center" style="width:auto; margin:auto">
+  <tr>
+    <th colspan="2" rowspan="2"></th>
+    <th colspan="2">The Other Participant</th>
+  </tr>
+  <tr>
+    <th>Action 1</th>
+    <th>Action 2</th>
+  </tr>
+  <tr>
+    <th rowspan="2">You</th>
+    <th>Action 1</th>
+    <td>{{ Constants.both_cooperate_payoff_1 }}, {{ Constants.both_cooperate_payoff_1 }}</td>
+    <td>{{ Constants.betrayed_payoff_1 }}, {{ Constants.betray_payoff_1 }}</td>
+  </tr>
+  <tr>
+    <th>Action 2</th>
+    <td>{{ Constants.betray_payoff_1 }}, {{ Constants.betrayed_payoff_1 }}</td>
+    <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
+  </tr>
+</table>
+
+<p>Once you and the person you are paired with have made your choices, both choices and the points you earned in that round will be displayed.</p>
+
+<br>
+{% next_button %}
+
 {% endblock %}

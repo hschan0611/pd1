@@ -9,9 +9,9 @@
     <p>The computer rolled a die to determine if the match continues.</p>
 
     {% if is_last_round %}
-        <p>The die roll was {{ dieroll }}. Since it was higher than {{ continuation_chance }}, the match has ended.</p>
+        <p>The die roll was {{ dieroll }}. Since it was higher than {{ continuation_chance }}, <strong>the match has ended</strong>.</p>
     {% else %}
-        <p>The die roll was {{ dieroll }}. Since it was {{ continuation_chance }} or less, the match continues to the next round.</p>
+        <p>The die roll was {{ dieroll }}. Since it was {{ continuation_chance }} or less, <strong>the match continues to the next round</strong>.</p>
     {% endif %}
 
     {% next_button %}
