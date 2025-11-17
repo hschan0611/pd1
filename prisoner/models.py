@@ -54,13 +54,13 @@ class Constants(BaseConstants):
     delta = 0.75
 
     # -------- Fixed supergame structure: each game sums to 48 rounds --------
-    num_matches_game1 = 2
-    match_duration_game1 = [2,2]  # sum = 48
+    num_matches_game1 = 1
+    match_duration_game1 = [1,1]  # sum = 48
     last_rounds_game1, first_rounds_game1, last_round_game1 = bounds_from_durations(match_duration_game1)
     num_rounds_game1 = sum(match_duration_game1)  # 48
 
-    num_matches_game2 = 2
-    match_duration_game2 = [2,2]  # sum = 48
+    num_matches_game2 = 1
+    match_duration_game2 = [1,1]  # sum = 48
     last_rounds_game2, first_rounds_game2, last_round_game2 = bounds_from_durations(match_duration_game2)
     num_rounds_game2 = sum(match_duration_game2)  # 48
 
