@@ -281,10 +281,10 @@ class Player(BasePlayer):
     crt_q1_correct = models.BooleanField(initial=False)
 
     crt_q2 = models.IntegerField(
-        label="If it takes 5 machines 5 minutes to make 5 widgets, how many minutes would it take 100 machines to make 100 widgets?")
+        label="If it takes 4 machines 4 minutes to make 4 widgets, how many minutes would it take 80 machines to make 80 widgets?")
     crt_q2_correct = models.BooleanField(initial=False)
 
     crt_q3 = models.IntegerField(
-        label="In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how many days would it take to cover half of the lake?")
+        label="In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 36 days for the patch to cover the entire lake, how many days would it take to cover half of the lake?")
     crt_q3_correct = models.BooleanField(initial=False)
 

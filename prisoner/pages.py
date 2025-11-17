@@ -532,7 +532,7 @@ class CRT_Q2(Page):
         if v is None or not isinstance(v, int):
             return "Please enter an integer (no decimals)."
     def before_next_page(self):
-        self.player.crt_q2_correct = (self.player.crt_q2 == 5)
+        self.player.crt_q2_correct = (self.player.crt_q2 == 4)
 
 class CRT_Q2_Result(Page):
     def is_displayed(self):
@@ -552,7 +552,7 @@ class CRT_Q3(Page):
             return "Please enter an integer (no decimals)."
 
     def before_next_page(self):
-        self.player.crt_q3_correct = (self.player.crt_q3 == 47)
+        self.player.crt_q3_correct = (self.player.crt_q3 == 35)
 
 class CRT_Q3_Result(Page):
     def is_displayed(self):
