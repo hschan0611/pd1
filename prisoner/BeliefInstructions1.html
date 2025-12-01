@@ -1,0 +1,69 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Instructions for Belief Task
+{% endblock %}
+
+{% block content %}
+
+<div class="card card-body bg-light instructions">
+    <div class="big">
+
+<p>Now, you will have one more task. In each round of a match, after you make your choice and before seeing the results, you will be asked to submit your belief about the choice made by the person you are paired with.</p>
+
+<p>To indicate your belief, you will use the slider shown on the screen. The position of the slider represents your best assessment of the likelihood (expressed as a percentage) that the person you are paired with chooses <strong>Action&nbsp;1</strong> or <strong>Action&nbsp;2</strong>.</p>
+
+<h4>Examples</h4>
+<ul>
+    <li>
+        If your slider shows <strong>60%</strong> as below: You believe that the person you are paired with has a
+        <strong>60% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a
+        <strong>40% chance</strong> of selecting <strong>Action&nbsp;2</strong>).
+    </li>
+
+    <!-- 60% demo slider -->
+    <div style="margin: 15px 0 25px 0;">
+        <input type="range"
+               min="0" max="100"
+               value="60"
+               disabled
+               style="width: 100%; pointer-events: none;">
+        <p>Probability: <strong>60%</strong></p>
+    </div>
+
+    <li>
+        If your slider shows <strong>30%</strong> as below: You believe that the person you are paired with has a
+        <strong>30% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a
+        <strong>70% chance</strong> of selecting <strong>Action&nbsp;2</strong>).
+    </li>
+
+    <!-- 30% demo slider -->
+    <div style="margin: 15px 0 0 0;">
+        <input type="range"
+               min="0" max="100"
+               value="30"
+               disabled
+               style="width: 100%; pointer-events: none;">
+        <p>Probability: <strong>30%</strong></p>
+    </div>
+</ul>
+
+
+<h4>Payment</h4>
+<p>In Part&nbsp;1, one match will be randomly selected to count toward your payment, and you will receive the points associated with your choices. Furthermore, a different match will be randomly selected, and the computer will randomly choose one round from that match for payment in the belief task. The belief that you report in that round will determine your chance of winning a prize of 50&nbsp;points.</p>
+
+<p>To determine your payment in the belief task, the computer will randomly draw two numbers between 0 and 100. The two draws are independent, meaning that the outcome of the first draw in no way affects the outcome of the second draw.</p>
+
+<ul>
+    <li>If the person you are paired with chose&nbsp;1 in that round, and the number you indicated as the likelihood that the other chose&nbsp;1 is larger than either of the two draws, you will win the prize.</li>
+    <li>If the person you are paired with chose&nbsp;2 in that round, and the number you indicated as the likelihood that the other chose&nbsp;2 is larger than either of the two draws, you will win the prize.</li>
+</ul>
+
+<p><strong>The rules that determine your chance of winning this prize were purposefully designed so that you have the highest chance of winning when you report your true belief about how likely the person you are paired with chooses Action&nbsp;1 or Action&nbsp;2</strong>. Your belief report does not affect anyone else’s decisions and is not shown to other participants.</p>
+
+    </div>
+
+    {% next_button %}
+    </div>
+{% endblock %}

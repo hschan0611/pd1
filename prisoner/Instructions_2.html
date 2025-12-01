@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-Instructions for Part 1 and Part 2
+Instructions for Part 1
 {% endblock %}
 
 {% block content %}
@@ -10,33 +10,21 @@ Instructions for Part 1 and Part 2
     <p class="big">
 
     <p>
-    In this experiment, you will participate in <strong>two parts: Part 1 and Part 2</strong>.
+        This experiment has four parts; the following instructions are for Part 1.
     </p>
 
     <p>
-    The two parts are independent: your decisions in Part 1 will not affect what happens in Part 2.
-    You will earn points in both parts, and your final payment will be based on your combined earnings.
+        In this experiment you will be repeatedly matched with a randomly selected person in the room. During each match, you will be asked to make decisions over a sequence of rounds.
     </p>
 
-    <p>Each part consists of sequences, referred to as <strong>matches</strong>. The length of a match, referred to as <strong>the number of rounds</strong>, is <strong>randomly determined</strong>. <strong>After each round, there is a {{ continuation_chance }}% probability that the match will continue for at least another round</strong>. For example:</p>
 
-    <ul>
-        <li>If you are in round 2, the probability there will be a third round is {{ continuation_chance }}%.</li>
-        <li>If you are in round 9, the probability there will be a tenth round is also {{ continuation_chance }}%.</li>
-    </ul>
+    <p>
+        In each round, you and the person you are paired with choose simultaneously between two actions, <strong>Action 1</strong> and <strong>Action 2</strong>. The points you can obtain in each round of a match depend on your choice and the choice of the person you are paired with.
+    </p>
 
-    <p>This is how the length of a match is determined: at the end of each round, the computer rolls a fair 100-sided die.</p>
-
-    <ul>
-        <li>If the die comes up {{ die_threshold_plus_one }} or more, the match ends.</li>
-        <li>If the die comes up {{ continuation_chance }} or less, the match continues to another round.</li>
-    </ul>
-
-    <p><strong>Once a match ends, you will be randomly paired with another person for a new match</strong>.</p>
-
-    <p>In each round, you and the person you are paired with choose simultaneously between two actions, <strong>Action 1</strong> and <strong>Action 2</strong>.</p>
-
-    <p>This table shows the payoffs associated with each choice in <strong>Part 1</strong>:</p>
+    <p>
+        This table shows the payoffs associated with each choice in <strong>Part 1</strong>:
+    </p>
 
     <table class='table table-bordered text-center' style='width: auto; margin: auto'>
         <tr>
@@ -69,20 +57,35 @@ Instructions for Part 1 and Part 2
         <li>If you select <strong>Action 2</strong> and the other selects <strong>Action 2</strong>, you each make {{ Constants.both_defect_payoff_1 }} points.</li>
     </ul>
 
-    <p>Once you and the person you are paired with have made your choices, both choices and the points you earned in this round will be shown. </p>
 
     <p>
-    After completing <strong>Part 1</strong>, you will participate in <strong>Part 2</strong>.
-    The format and rules will remain the same, but the specific payoff amounts may change.
+        At the end of each round, you will see your choice (Action 1 or Action 2), the choice of the person you were paired with (Action 1 or Action 2), and the points you earned.
     </p>
 
-    <p>In this experiment, you will earn points through the decisions that you make. Your earnings will be determined as follows:</p>
+    <p>
+        Part 1 consists of <strong>matches</strong>. The length of a match, referred to as <strong>the number of rounds</strong>, is <strong>randomly determined</strong>. <strong>After each round, there is a {{ continuation_chance }}% probability that the match will continue for at least another round</strong>. For example:</p>
+
     <ul>
-      <li><strong>Part 1:</strong> At the end of the session, one of the matches from Part 1 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
-      <li><strong>Part 2:</strong> Similarly, one of the matches from Part 2 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</li>
+        <li>If you are in round 2, the probability there will be a third round is {{ continuation_chance }}%.</li>
+        <li>If you are in round 9, the probability there will be a tenth round is also {{ continuation_chance }}%.</li>
     </ul>
 
-    <p>All points are converted at a rate of 25 points = $1, and you also receive a $5 show-up fee.</p>
+    <p>This is how the length of a match is determined: at the end of each round, the computer rolls a fair 100-sided die.</p>
+
+    <ul>
+        <li>If the die comes up {{ die_threshold_plus_one }} or more, the match ends.</li>
+        <li>If the die comes up {{ continuation_chance }} or less, the match continues to another round.</li>
+    </ul>
+
+    <p><strong>
+        Once a match ends, you will be randomly paired with another person for a new match</strong>.
+    </p>
+
+    <p>
+        In this experiment, you will earn points through the decisions that you make. At the end of the session, one of the matches from Part 1 will be chosen at random. You are paid the sum of all points you earned from your decisions in that selected match.</p>
+
+
+    <p>All points are converted to dollars at a rate of 25 points = $1, and you also receive a $5 show-up fee.</p>
 
     {% next_button %}
 </div>

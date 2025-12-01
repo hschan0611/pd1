@@ -122,7 +122,6 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    # --- Quiz fields (unchanged) ---
     quiz_Q1_response = models.BooleanField(
         label="True/False: Referring to the payoff table, the first entry in each cell represents your payoff, while the second entry represents the payoff of the person you are matched with.",
         choices=[(True, 'True'), (False, 'False')],
@@ -151,11 +150,22 @@ class Player(BasePlayer):
     )
     quiz_Q4_correct = models.BooleanField()
 
+    belief_quiz = models.StringField(
+        label='If your slider shows 75% as above, what does that mean? ',
+        choices=[
+            ('all_75', 'You believe that 75% of all participants chose Action 1.'),
+            ('paired_75', 'You believe that the person you are paired with has a 75% chance of choosing Action 1.'),
+            ('paired_25', 'You believe that the person you are paired with has a 75% chance of choosing Action 2.'),
+            ('75_points', 'You believe that you will receive 75 points.'),
+        ],
+        widget=widgets.RadioSelect
+    )
+    belief_quiz_correct = models.BooleanField(initial=False)
+
     # --- Belief task ---
     belief = models.IntegerField(
         min=0, max=100,
         label="Probability (0-100) that the other player will choose Action 1?",
-        initial=50
     )
     belief_interacted = models.BooleanField(initial=False)
     belief_asked = models.BooleanField(initial=False)
@@ -276,15 +286,17 @@ class Player(BasePlayer):
         self.participant.vars['bret_points'] = int(self.bret_points)
 
 
-    crt_q1 = models.IntegerField(
-        label="A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost (in cents)?")
+    crt_q1 = models.FloatField(
+        label="A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost (in cents)?"
+    )
     crt_q1_correct = models.BooleanField(initial=False)
 
-    crt_q2 = models.IntegerField(
-        label="If it takes 4 machines 4 minutes to make 4 widgets, how many minutes would it take 80 machines to make 80 widgets?")
+    crt_q2 = models.FloatField(
+        label="If it takes 4 machines 4 minutes to make 4 widgets, how many minutes would it take 80 machines to make 80 widgets?"
+    )
     crt_q2_correct = models.BooleanField(initial=False)
 
-    crt_q3 = models.IntegerField(
-        label="In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 36 days for the patch to cover the entire lake, how many days would it take to cover half of the lake?")
+    crt_q3 = models.FloatField(
+        label="In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 36 days for the patch to cover the entire lake, how many days would it take to cover half of the lake?"
+    )
     crt_q3_correct = models.BooleanField(initial=False)
-

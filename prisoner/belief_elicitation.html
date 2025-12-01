@@ -2,36 +2,11 @@
 {% load otree static %}
 
 {% block title %}
-    Part {{ game_number }} - Match {{ match_number }} - Round {{ round_in_match  }}: Predict the Other Participant's Action
+    Part {{ subsession.active_game }} - Match {{ subsession.match_number }} - Round {{ subsession.round_in_match_number }}:
+    Predict the Other Participant's Action
 {% endblock %}
 
 {% block content %}
-
-<p>Now, you will have one more task. In each round of a match, after you make your choice and before seeing the results, you will be asked to submit your belief about the choice made by the person you are paired with.</p>
-
-<p>To indicate your belief, you will use the slider shown on the screen below. The position of the slider represents your best assessment of the likelihood (expressed as a percentage) that the person you are paired with chooses <strong>Action&nbsp;1</strong> or <strong>Action&nbsp;2</strong>.</p>
-
-<h4>Examples</h4>
-<ul>
-    <li>If your slider shows <strong>60%</strong>: You believe that the person you are paired with has a <strong>60% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a <strong>40% chance</strong> of selecting <strong>Action&nbsp;2</strong>).</li>
-    <li>If your slider shows <strong>30%</strong>: You believe that the person you are paired with has a <strong>30% chance</strong> of selecting <strong>Action&nbsp;1</strong> (and a <strong>70% chance</strong> of selecting <strong>Action&nbsp;2</strong>).</li>
-</ul>
-
-<h4>Payment</h4>
-<p>Both in Part&nbsp;1 and Part&nbsp;2, one match will be randomly selected to count toward your payment, and you will receive the points associated with your choices. Furthermore, a different match will be randomly selected, and the computer will randomly choose one round from that match for payment in the belief task. The belief that you report in that round will determine your chance of winning a prize of 50&nbsp;points.</p>
-
-<p>To determine your payment in the belief task, the computer will randomly draw two numbers between 0 and 100. The two draws are independent, meaning that the outcome of the first draw in no way affects the outcome of the second draw.</p>
-
-<ul>
-    <li>If the person you are paired with chose&nbsp;1 in that round, and the number you indicated as the likelihood that the other chose&nbsp;1 is larger than either of the two draws, you will win the prize.</li>
-    <li>If the person you are paired with chose&nbsp;2 in that round, and the number you indicated as the likelihood that the other chose&nbsp;2 is larger than either of the two draws, you will win the prize.</li>
-</ul>
-
-<p>The rules that determine your chance of winning this prize were purposefully designed so that you have the highest chance of winning when you report your true belief about how likely the person you are paired with chooses <strong>Action&nbsp;1</strong> or <strong>Action&nbsp;2</strong>. Your belief report does not affect anyone else’s decisions and is not shown to other participants.</p>
-
-
-<hr>
-
 <h3>Payoff Table (Part {% if subsession.active_game == 1 %}1{% else %}2{% endif %})</h3>
 <p>Below is the payoff table. In each cell, the first number is <strong>your</strong> payoff and the second is the <strong>other participant’s</strong> payoff.</p>
 
@@ -46,7 +21,7 @@
   </tr>
 
   {% if subsession.active_game == 1 %}
-    <!-- Part 1 payoffs (cooperate=48) -->
+    <!-- Part 1 payoffs -->
     <tr>
       <th rowspan="2">You</th>
       <th>Action 1</th>
@@ -59,7 +34,7 @@
       <td>{{ Constants.both_defect_payoff_1 }}, {{ Constants.both_defect_payoff_1 }}</td>
     </tr>
   {% else %}
-    <!-- Part 2 payoffs (cooperate=32) -->
+    <!-- Part 2 payoffs -->
     <tr>
       <th rowspan="2">You</th>
       <th>Action 1</th>
@@ -74,40 +49,39 @@
   {% endif %}
 </table>
 
-
 <h3><strong>Enter Your Belief</strong></h3>
-<p>Use the slider to indicate your belief (0-100%) about how likely the other participant is to choose Action 1:</p>
+<p>Use the slider to indicate your belief (0–100%) about how likely the other participant is to choose Action 1:</p>
 
-<form method="post" id="belief-form">
-  <!-- Slider -->
-  <input
+<!-- No extra <form> here; global/Page.html already wraps content in a form -->
+
+<!-- Slider -->
+<input
     type="range"
     id="belief-slider"
     name="belief"
-    min="0" max="100"
-    value="{{ player.field_maybe_none('belief') or 50 }}"
+    min="0"
+    max="100"
+    value="{{ belief_value_init }}"
     oninput="updateBeliefValue(this.value)"
     aria-label="Belief that the other participant chooses Action 1 (0–100%)"
     style="width: 80%; height: 30px;"
-  >
+>
 
-  <p>Probability: <span id="belief-value">{{ player.field_maybe_none('belief') or 50 }}</span>%</p>
+<p>Probability: <span id="belief-value">{{ belief_value_init }}</span>%</p>
 
-  <!-- Hidden interaction flag -->
-  <input type="hidden" name="belief_interacted" id="belief_interacted" value="0">
+<!-- Hidden interaction flag -->
+<input type="hidden" name="belief_interacted" id="belief_interacted" value="0">
 
-  <!-- Confirmation copy that adapts when user hasn't interacted -->
-  <div id="confirmation-box" style="display: none; margin-top: 20px;">
-    <p id="confirmation-text"><strong>Are you sure this is your final guess?</strong></p>
-    <button type="button" class="btn btn-secondary" onclick="hideConfirmation()">No, change my guess</button>
-    <button type="submit" id="submit-button" class="btn btn-primary">Yes, submit</button>
-  </div>
+<!-- Confirmation copy that adapts when user hasn't interacted -->
+<div id="confirmation-box" style="display: none; margin-top: 20px;">
+  <p id="confirmation-text"><strong>Are you sure this is your final guess?</strong></p>
+  <button type="button" class="btn btn-secondary" onclick="hideConfirmation()">No, change my guess</button>
+  <!-- This submits the main oTree form -->
+  <button type="submit" id="submit-button" class="btn btn-primary">Yes, submit</button>
+</div>
 
-  <!-- Initial Next Button -->
-  <button type="button" id="next-button" class="btn btn-primary" onclick="confirmBelief()">Next</button>
-
-</form>
-
+<!-- Initial Next Button (does NOT submit) -->
+<button type="button" id="next-button" class="btn btn-primary" onclick="confirmBelief()">Next</button>
 
 <script>
   const slider = document.getElementById("belief-slider");
@@ -123,30 +97,26 @@
 
   function updateBeliefValue(val) {
     valueEl.textContent = val;
-    // oninput already implies interaction, but keep explicit flag set:
     markInteracted();
   }
 
-  // Consider *any* user action as interaction, even if value remains 50
+  // Mark as interacted on any user action
   ["pointerdown","touchstart","mousedown","keydown","input","change"].forEach(ev => {
     slider.addEventListener(ev, markInteracted, { passive: true });
   });
 
   function confirmBelief() {
-    const sliderValue = slider.value;           // "0".."100"
+    const sliderValue = slider.value;
     const interacted = interactedEl.value === "1";
 
-    // We never block 50%. If it's still 50% and no interaction,
-    // we just show a gentle note in the confirmation box.
-    if (!interacted && sliderValue === "50") {
+    if (!interacted) {
       confirmText.innerHTML =
-        "<strong>You haven't adjusted the slider from 50%.</strong> " +
-        "If 50% truly reflects your belief, please confirm below.";
+        "<strong>You haven't adjusted the slider.</strong> " +
+        "If this value truly reflects your belief, please confirm below.";
     } else {
       confirmText.textContent = "Are you sure this is your final guess?";
     }
 
-    // Show confirmation, hide Next
     nextBtn.style.display = "none";
     confirmBox.style.display = "block";
   }

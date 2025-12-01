@@ -1,0 +1,81 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+Question 1
+{% endblock %}
+
+{% block content %}
+
+    <div style="margin: 15px 0 25px 0;">
+        <input type="range"
+               min="0" max="100"
+               value="75"
+               disabled
+               style="width: 100%; pointer-events: none;">
+        <p><strong>Probability: 75%</strong></p>
+    </div>
+
+<strong>{{ formfield "belief_quiz" }} </strong>
+{{ formfield_errors "belief_quiz" }}
+
+<br>
+<button class="otree-btn-next btn btn-primary">Submit</button>
+
+<hr>
+
+
+<div class="card card-body bg-light">
+<h4>Reminder of Instructions for Belief Task</h4>
+
+
+<p>
+To indicate your belief, you will use the slider shown on the screen.
+The position of the slider represents your best assessment of the likelihood (expressed as a percentage)
+that the person you are paired with chooses <strong>Action 1</strong> or <strong>Action 2</strong>.
+</p>
+
+<h5>Examples</h5>
+<ul>
+    <li><strong>60%</strong>: You believe that the person you are paired with has a
+        <strong>60% chance</strong> of selecting <strong>Action 1</strong> (and a
+        <strong>40% chance</strong> of selecting <strong>Action 2</strong>).</li>
+    <li><strong>30%</strong>: You believe that the person you are paired with has a
+        <strong>30% chance</strong> of selecting <strong>Action 1</strong> (and a
+        <strong>70% chance</strong> of selecting <strong>Action 2</strong>).</li>
+</ul>
+
+<h5>Payment</h5>
+
+<p>
+In Part 1, one match will be randomly selected to count toward your payment,
+and you will receive the points associated with your choices.
+Furthermore, a different match will be randomly selected, and the computer will
+randomly choose one round from that match for payment in the belief task.
+The belief that you report in that round will determine your chance of winning a prize of 50 points.
+</p>
+
+<p>
+To determine your payment in the belief task, the computer will randomly draw two numbers between 0 and 100.
+The two draws are independent, meaning that the outcome of the first draw in no way affects the outcome of the second draw.
+</p>
+
+<ul>
+    <li>
+        If the person you are paired with chose <strong>Action 1</strong> in that round, and the number you indicated
+        as the likelihood that the other chose 1 is larger than either of the two draws,
+        you will win the prize.
+    </li>
+    <li>
+        If the person you are paired with chose <strong>Action 2</strong> in that round, and the number you indicated
+        as the likelihood that the other chose 2 is larger than either of the two draws,
+        you will win the prize.
+    </li>
+</ul>
+
+<p>
+These rules give you the highest chance of winning when you report your true belief.
+Your belief report does not affect anyone else’s decisions and is not shown to other participants.
+</p>
+</div>
+{% endblock %}

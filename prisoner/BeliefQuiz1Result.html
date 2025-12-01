@@ -1,0 +1,96 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+Question 1
+{% endblock %}
+
+{% block content %}
+
+<div style="margin: 15px 0 25px 0;">
+    <input type="range"
+           min="0" max="100"
+           value="75"
+           disabled
+           style="width: 100%; pointer-events: none;">
+    <p><strong>Probability: 75%</strong></p>
+</div>
+
+<h5><strong>If your slider shows 75%, what does that mean?</strong></h5>
+
+<hr>
+
+{{ formfields }}
+
+<h5><strong>Result</strong></h5>
+
+{% if player.belief_quiz_correct %}
+    <p class="solution-correct">
+        Your answer is correct.<br><br>
+        <i>"You believe that the person you are paired with has a 75% chance of choosing Action 1."</i><br>
+    </p>
+{% else %}
+    <p class="solution-incorrect">
+        Your answer is incorrect. The correct answer is:<br>
+        <strong>"You believe that the person you are paired with has a 75% chance of choosing Action 1."</strong><br><br>
+    </p>
+{% endif %}
+
+<button class="otree-btn-next btn btn-primary">Next</button>
+
+<hr>
+
+
+
+<div class="card card-body bg-light" style="margin-top: 30px;">
+<h4>Reminder of Part 3 Instruction</h4>
+
+<p>
+To indicate your belief, you will use the slider shown on the screen.
+The slider represents your assessment of the likelihood (0–100%)
+that the person you are paired with chooses <strong>Action 1</strong> or <strong>Action 2</strong>.
+</p>
+
+<h5>Examples</h5>
+<ul>
+    <li><strong>60%</strong>: The person you are paired with has a
+        <strong>60% chance</strong> of choosing <strong>Action 1</strong>.</li>
+    <li><strong>30%</strong>: The person you are paired with has a
+        <strong>30% chance</strong> of choosing <strong>Action 1</strong>.</li>
+</ul>
+
+<h5>Payment</h5>
+<p>
+In both Part 1 and Part 2, one match will be randomly selected to count toward your payment.
+A different match will also be selected, and the computer will randomly choose one round from that match
+to determine your belief-task payment.
+</p>
+
+<p>
+Two numbers between 0 and 100 will be drawn independently:
+</p>
+
+<ul>
+    <li>If the other person chose <strong>Action 1</strong>, and your reported probability of Action 1 is higher
+        than either of the two draws, you win 50 points.</li>
+
+    <li>If the other person chose <strong>Action 2</strong>, and your reported probability of Action 2 is higher
+        than either draw, you win 50 points.</li>
+</ul>
+
+<p>
+These rules are designed so that your best strategy is to report your true belief.
+Your report does not affect the other participant and is not shown to them.
+</p>
+
+</div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+  input { pointer-events: none; }
+  .solution-incorrect { color: darkred; }
+  .solution-correct { color: green; }
+</style>
+{% endblock %}

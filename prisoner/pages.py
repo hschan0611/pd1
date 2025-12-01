@@ -44,6 +44,14 @@ class Instructions_4(Page):
     def is_displayed(self):
         return self.subsession.round_number == 1
 
+class WaitBeforeGame1(WaitPage):
+    """
+    A waiting page shown after Instructions_3, before Game 1 begins.
+    This can be used to synchronize participants or to display a short message.
+    """
+    wait_for_all_groups = True  # ensures everyone finishes instructions before proceeding
+
+
 class Decision(Page):
     form_model = 'player'
     form_fields = ['decision']
@@ -334,6 +342,73 @@ class EndRoundGame2(Page):
     def is_displayed(self):
         return Constants.num_rounds_game1 < self.round_number <= Constants.num_rounds_game1 + Constants.num_rounds_game2
 
+class BeliefInstructions1(Page):
+    template_name = 'prisoner/BeliefInstructions1.html'
+    """
+    Instruction page shown before the FIRST belief task in Game 1.
+    Appears only in the first round of the first match of Part 1,
+    and (because of page_sequence order) after the first action decision.
+    """
+
+    def is_displayed(self):
+        return (
+                self.subsession.active_game == 1
+                and self.subsession.match_number == 1
+                and self.subsession.round_in_match_number == 1
+        )
+
+class BeliefInstructions2(Page):
+    template_name = 'prisoner/BeliefInstructions2.html'
+
+    def is_displayed(self):
+        return (
+                self.subsession.active_game == 1
+                and self.subsession.match_number == 1
+                and self.subsession.round_in_match_number == 1
+        )
+
+class BeliefQuiz1(Page):
+    form_model = 'player'
+    form_fields = ['belief_quiz']
+
+    def is_displayed(self):
+        return (
+                self.subsession.active_game == 1
+                and self.subsession.match_number == 1
+                and self.subsession.round_in_match_number == 1
+        )
+    def before_next_page(self):
+        # correct answer is: "The person you are paired with has a 75% chance..."
+        self.player.belief_quiz_correct = (self.player.belief_quiz == 'paired_75')
+
+    def vars_for_template(self):
+        return dict(
+            both_cooperate_payoff=Constants.both_cooperate_payoff_1,
+            betray_payoff=Constants.betray_payoff_1,
+            both_defect_payoff=Constants.both_defect_payoff_1,
+            betrayed_payoff=Constants.betrayed_payoff_1,
+        )
+
+class BeliefQuiz1Result(Page):
+    template_name = 'prisoner/BeliefQuiz1Result.html'
+
+    def is_displayed(self):
+        return (
+                self.subsession.active_game == 1
+                and self.subsession.match_number == 1
+                and self.subsession.round_in_match_number == 1
+        )
+
+class EndofBeliefQuiz(Page):
+    template_name = 'prisoner/EndofBeliefQuiz.html'
+
+    def is_displayed(self):
+        return (
+                self.subsession.active_game == 1
+                and self.subsession.match_number == 1
+                and self.subsession.round_in_match_number == 1
+        )
+
 
 class BeliefElicitation(Page):
     form_model = 'player'
@@ -341,16 +416,17 @@ class BeliefElicitation(Page):
     template_name = 'prisoner/belief_elicitation.html'
 
     def before_next_page(self):
+        # mark that the belief task happened this round
         self.player.belief_asked = True
 
     def vars_for_template(self):
-        # game number from subsession flag
-        game_number = 1 if self.subsession.active_game == 1 else 2
 
-        # use what you actually store; fall back to sensible defaults
+        # ---- BASIC INFO ----
+        game_number = 1 if self.subsession.active_game == 1 else 2
         match_number = getattr(self.subsession, 'match_number', 1)
         round_in_match = getattr(self.subsession, 'round_in_match_number', self.round_number)
 
+        # ---- PAYOFF TABLE ----
         if game_number == 1:
             both_cooperate_payoff = Constants.both_cooperate_payoff_1
             betray_payoff = Constants.betray_payoff_1
@@ -362,6 +438,16 @@ class BeliefElicitation(Page):
             both_defect_payoff = Constants.both_defect_payoff_2
             betrayed_payoff = Constants.betrayed_payoff_2
 
+        # ---- SAFE ACCESS TO FIELDS (NO DEFAULT 50) ----
+        # use field_maybe_none so oTree doesn't complain when the field is still None
+        raw_belief = self.player.field_maybe_none('belief')
+        raw_interacted = self.player.field_maybe_none('belief_interacted')
+
+        # if no previous belief, start at 0 (change this if you want another starting point)
+        belief_value_init = raw_belief if raw_belief is not None else 0
+        # raw_interacted can be None/0/1/True/False depending on how it's stored
+        belief_interacted_init = 1 if raw_interacted else 0
+
         return dict(
             game_number=game_number,
             match_number=match_number,
@@ -370,7 +456,10 @@ class BeliefElicitation(Page):
             betray_payoff=betray_payoff,
             both_defect_payoff=both_defect_payoff,
             betrayed_payoff=betrayed_payoff,
+            belief_value_init=belief_value_init,
+            belief_interacted_init=belief_interacted_init,
         )
+
 
 class BeliefElicitationGame1(BeliefElicitation):
     def is_displayed(self):
@@ -510,17 +599,19 @@ class CRT_Q1(Page):
     form_fields = ['crt_q1']
 
     def error_message(self, values):
-        v = values.get('crt_q1')
-        if v is None or not isinstance(v, int):
-            return "Please enter an integer (no decimals)."
+        if values['crt_q1'] is None:
+            return "Please enter a number."
+
     def before_next_page(self):
         self.player.crt_q1_correct = (self.player.crt_q1 == 5)
+
 
 class CRT_Q1_Result(Page):
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
     def vars_for_template(self):
         return dict(correct=self.player.crt_q1_correct)
+
 class CRT_Q2(Page):
     def is_displayed(self):
         return self.round_number == FINAL_ROUND
@@ -528,9 +619,9 @@ class CRT_Q2(Page):
     form_fields = ['crt_q2']
 
     def error_message(self, values):
-        v = values.get('crt_q2')
-        if v is None or not isinstance(v, int):
-            return "Please enter an integer (no decimals)."
+        if values['crt_q2'] is None:
+            return "Please enter a number."
+
     def before_next_page(self):
         self.player.crt_q2_correct = (self.player.crt_q2 == 4)
 
@@ -547,9 +638,8 @@ class CRT_Q3(Page):
     form_fields = ['crt_q3']
 
     def error_message(self, values):
-        v = values.get('crt_q3')
-        if v is None or not isinstance(v, int):
-            return "Please enter an integer (no decimals)."
+        if values['crt_q3'] is None:
+            return "Please enter a number."
 
     def before_next_page(self):
         self.player.crt_q3_correct = (self.player.crt_q3 == 35)
@@ -727,9 +817,18 @@ Q3, Q3Result,
 Q4, Q4Result,
 Instructions_3,
 
+WaitBeforeGame1,
+
 # === GAME 1 ===
 Game1Intro,
 DecisionGame1,
+
+BeliefInstructions1,
+BeliefInstructions2,
+BeliefQuiz1,
+BeliefQuiz1Result,
+EndofBeliefQuiz,
+
 BeliefElicitationGame1,
 ResultsWaitPageGame1,
 ResultsGame1,
@@ -749,9 +848,9 @@ BombStop,
 BombResults,
 
 CRTIntro,
-CRT_Q1, CRT_Q1_Result,
-CRT_Q2, CRT_Q2_Result,
-CRT_Q3, CRT_Q3_Result,
+CRT_Q1,
+CRT_Q2,
+CRT_Q3,
 
 Demographics,
 StoreTotals,
