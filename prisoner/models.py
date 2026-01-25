@@ -42,12 +42,12 @@ class Constants(BaseConstants):
     # PD payoffs
     betray_payoff_1 = 50
     betrayed_payoff_1 = 12
-    both_cooperate_payoff_1 = 32
+    both_cooperate_payoff_1 = 48
     both_defect_payoff_1 = 25
 
     betray_payoff_2 = 50
     betrayed_payoff_2 = 12
-    both_cooperate_payoff_2 = 48
+    both_cooperate_payoff_2 = 32
     both_defect_payoff_2 = 25
 
     # (delta still used in your instruction text, but not for lengths now)
@@ -55,12 +55,12 @@ class Constants(BaseConstants):
 
     # -------- Fixed supergame structure: each game sums to 48 rounds --------
     num_matches_game1 = 10
-    match_duration_game1 = [3, 5, 4, 6, 2, 7, 1, 4, 4, 4]  # sum = 40
+    match_duration_game1 = [3, 5, 4, 1, 2, 7, 6, 4, 4, 4]  # sum = 40
     last_rounds_game1, first_rounds_game1, last_round_game1 = bounds_from_durations(match_duration_game1)
     num_rounds_game1 = sum(match_duration_game1)  # 48
 
     num_matches_game2 = 10
-    match_duration_game2 = [3, 5, 4, 6, 2, 7, 1, 4, 4, 4]  # sum = 40
+    match_duration_game2 = [3, 5, 4, 1, 2, 7, 6, 4, 4, 4]  # sum = 40
     last_rounds_game2, first_rounds_game2, last_round_game2 = bounds_from_durations(match_duration_game2)
     num_rounds_game2 = sum(match_duration_game2)  # 48
 
