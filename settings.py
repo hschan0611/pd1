@@ -12,7 +12,7 @@ SESSION_CONFIGS = [
     dict(
         name='prisoner',
         display_name='Infinitely Repeated PD',
-        num_demo_participants=2,
+        num_demo_participants=20,
         app_sequence=['prisoner', 'payment'],
         real_world_currency_per_point=1 / 25,  # 25 pts = $1
         participation_fee=5.00,  # $5 show-up fee
