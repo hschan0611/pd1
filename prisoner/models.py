@@ -42,12 +42,12 @@ class Constants(BaseConstants):
     # PD payoffs
     betray_payoff_1 = 50
     betrayed_payoff_1 = 12
-    both_cooperate_payoff_1 = 48
+    both_cooperate_payoff_1 = 32
     both_defect_payoff_1 = 25
 
     betray_payoff_2 = 50
     betrayed_payoff_2 = 12
-    both_cooperate_payoff_2 = 32
+    both_cooperate_payoff_2 = 48
     both_defect_payoff_2 = 25
 
     # (delta still used in your instruction text, but not for lengths now)
